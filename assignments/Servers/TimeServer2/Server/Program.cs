@@ -64,10 +64,7 @@ namespace Server
                                     netStream.Write(message, 0, message.Length);
                                     break;
                             }
-
-                            //    byte[] sendBuffer = Encoding.UTF8.GetBytes("Is anybody there?");
-                            //    netStream.Write(sendBuffer);
-                    
+                            
                             client.Dispose();
                         }
                     }
