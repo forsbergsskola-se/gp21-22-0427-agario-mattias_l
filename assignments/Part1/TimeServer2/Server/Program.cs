@@ -41,11 +41,19 @@ namespace Server
                         var clientReader = new StreamReader(netStream);
                         var clientWriter = new  StreamWriter(netStream);
                         clientWriter.AutoFlush = true;
+                        clientWriter.WriteLine("Make request");
+                        
+                        var input = clientReader.ReadLine();
 
-                        clientReader.ReadLine();
+                        switch (input)
+                        {
+                            case "time":
+                                clientWriter.WriteLine(DateTime.Now.ToLongTimeString());
+                                break;
+                        }
 
-                        byte[] sendBuffer = Encoding.UTF8.GetBytes("Is anybody there?");
-                        netStream.Write(sendBuffer);
+                    //    byte[] sendBuffer = Encoding.UTF8.GetBytes("Is anybody there?");
+                    //    netStream.Write(sendBuffer);
                     }
                 }
                 catch (Exception e)
