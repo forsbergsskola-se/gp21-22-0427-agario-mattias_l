@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -29,39 +30,65 @@ namespace Server
                 Console.WriteLine("Waiting for connection");
                 TcpClient client = server.AcceptTcpClient();
                 Console.WriteLine("Client Accepted");
-                try
+                
+                new Thread(() =>
                 {
-                    if (client.Connected)
+                    try
                     {
-                        var currentTime = DateTime.Now.ToLongTimeString();
-                        var numBytes = Encoding.ASCII.GetByteCount(currentTime);
-
-                        using NetworkStream netStream = client.GetStream();
-                        
-                        var clientReader = new StreamReader(netStream);
-                        var clientWriter = new  StreamWriter(netStream);
-                        clientWriter.AutoFlush = true;
-                        clientWriter.WriteLine("Make request");
-                        
-                        var input = clientReader.ReadLine();
-
-                        switch (input)
+                        if (client.Connected)
                         {
-                            case "time":
-                                clientWriter.WriteLine(DateTime.Now.ToLongTimeString());
-                                break;
-                        }
+                            var currentTime = DateTime.Now.ToLongTimeString();
+                            var numBytes = Encoding.ASCII.GetByteCount(currentTime + 1);
+                            byte[] dataToSend = new byte[numBytes];
+                            dataToSend = Encoding.ASCII.GetBytes(currentTime);
+                            
+                            var culture = new CultureInfo("en-US");
 
-                    //    byte[] sendBuffer = Encoding.UTF8.GetBytes("Is anybody there?");
-                    //    netStream.Write(sendBuffer);
+                            using NetworkStream netStream = client.GetStream();
+                        
+                            var clientReader = new StreamReader(netStream);
+                            var clientWriter = new  StreamWriter(netStream);
+                            clientWriter.AutoFlush = true;
+                            clientWriter.WriteLine("Make request");
+                        
+                            var input = clientReader.ReadLine();
+
+                            switch (input)
+                            {
+                                case "time":
+                                    clientWriter.WriteLine(DateTime.Now.ToString(culture));
+                                    break;
+                                case "time2":
+                                    var message = GetMessage();
+                                    
+                                    netStream.Write(message, 0, message.Length);
+                                    break;
+                            }
+
+                            //    byte[] sendBuffer = Encoding.UTF8.GetBytes("Is anybody there?");
+                            //    netStream.Write(sendBuffer);
+                    
+                            client.Dispose();
+                        }
                     }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    throw;
-                }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        throw;
+                    }
+                }).Start();
             }
         }
+        
+        
+        private static byte[] GetMessage()
+        {
+            var currentTime = DateTime.Now.ToLongTimeString();
+            var numBytes = Encoding.ASCII.GetByteCount(currentTime + 1);
+            byte[] dataToSend = new byte[numBytes];
+            dataToSend = Encoding.ASCII.GetBytes(currentTime);
+            return dataToSend;
+        }
     }
+    
 }
