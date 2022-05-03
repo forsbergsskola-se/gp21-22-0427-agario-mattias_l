@@ -12,6 +12,7 @@ namespace Client
             {
                 Int32 port = 13000;
                 TcpClient client = new TcpClient("127.0.0.1", port);
+                Console.ReadKey();
             }
             catch (Exception e)
             {
