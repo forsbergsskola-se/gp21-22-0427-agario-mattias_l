@@ -10,7 +10,6 @@ namespace Server
 {
     class Program
     {
-        private TcpClient client = null;
         private static TcpListener server = null;
 
         static void Main(string[] args)
