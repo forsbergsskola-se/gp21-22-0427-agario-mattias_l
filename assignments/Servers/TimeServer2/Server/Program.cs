@@ -58,7 +58,7 @@ namespace Server
                                     clientWriter.WriteLine(DateTime.Now.ToString(culture));
                                     break;
                                 case "time2":
-                                    var message = GetMessage();
+                                    var message = EncodeMessage();
                                     
                                     netStream.Write(message, 0, message.Length);
                                     break;
@@ -77,12 +77,12 @@ namespace Server
         }
         
         
-        private static byte[] GetMessage()
+        private static byte[] EncodeMessage()
         {
             var currentTime = DateTime.Now.ToLongTimeString();
-            var numBytes = Encoding.ASCII.GetByteCount(currentTime + 1);
+            var numBytes = Encoding.UTF8.GetByteCount(currentTime + 1);
             byte[] dataToSend = new byte[numBytes];
-            dataToSend = Encoding.ASCII.GetBytes(currentTime);
+            dataToSend = Encoding.UTF8.GetBytes(currentTime);
             return dataToSend;
         }
     }
