@@ -8,26 +8,34 @@ namespace UPDClient
 {
     class Program
     {
-        static UdpClient client = new UdpClient(2000);
+        static UdpClient client = new UdpClient();
 
         static void Main(string[] args)
         {
             try
             {
                 IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9050);
-                client.Connect(ep);
-                
+                //client.Connect(ep);
+                var epRecieve = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 2000);
+                var clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                clientSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, true);
+                clientSocket.Bind(epRecieve);
+                clientSocket = client.Client;
+                //  client.EnableBroadcast = true;
+          
                 while (true)
                 {
+                    client.EnableBroadcast = true;
+                    ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9050);
+                    
                     Console.WriteLine("Input word");
-                    var aWord = Console.ReadLine();
-                    var bytes = ConvertStringToByteArray(aWord);
-
-                    client.Send(bytes, bytes.Length);
+                    
+                    var bytes = ConvertStringToByteArray(Console.ReadLine());
+                    client.Send(bytes, bytes.Length, ep);
                     Console.WriteLine("Message sent");
-
+                    
                     var data = client.Receive(ref ep);
-                    Console.WriteLine("Message received");
+        
                     Console.WriteLine(ConvertBytesToString(data));
                 }
 

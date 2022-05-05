@@ -27,6 +27,7 @@ namespace UDPServer
                 
                 while (true)
                 {
+                    Console.WriteLine("Waiting for message");
                     var data = newsock.Receive(ref sender);
                     var theString = ConvertBytesToString(data);
                     
@@ -34,12 +35,15 @@ namespace UDPServer
                     {
                         compoundString += theString + " ";
                         Console.WriteLine(compoundString);
-                    }
-                
-                    var byteArray = ConvertStringToByteArray(compoundString);
+                        var byteArray = ConvertStringToByteArray(compoundString);
     
-                    server.Send(byteArray, byteArray.Length, sender);
-                    Console.WriteLine("Message sent");
+                        server.Send(byteArray, byteArray.Length, sender);
+                        Console.WriteLine("Message sent");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error");
+                    }
                 }
             }).Start();
         }
