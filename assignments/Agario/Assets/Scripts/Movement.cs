@@ -35,20 +35,16 @@ public class Movement : MonoBehaviour
             }
         }
 
-        if (move)
-        {
-            player.position =
-                Vector3.Lerp(currentPos, worldPosition, alpha);
-            alpha += moveSpeed * Time.deltaTime;
-            
-            Debug.Log(alpha);
-            
-            if (alpha > 0.99f)
-            {
-                move = false;
-                alpha = 0;
-            }
-        }
+        if (!move) return;
+        
+        player.position =
+            Vector3.Lerp(currentPos, worldPosition, alpha);
+        alpha += moveSpeed * Time.deltaTime;
+
+        if (!(alpha > 0.99f)) return;
+        
+        move = false;
+        alpha = 0;
     }
 
 }
