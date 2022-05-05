@@ -315,7 +315,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   worldPosition: {x: 0, y: 0, z: 0}
-  chara: {fileID: 0}
+  player: {fileID: 940076057}
+  moveSpeed: 0.1
 --- !u!1 &940076053
 GameObject:
   m_ObjectHideFlags: 0

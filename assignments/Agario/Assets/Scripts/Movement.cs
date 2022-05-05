@@ -8,7 +8,7 @@ public class Movement : MonoBehaviour
     private Camera cam;
     public Vector3 worldPosition;
     Plane plane = new Plane(Vector3.up, 0);
-    public Transform chara;
+    public Transform player;
     private bool move = false;
     private float alpha;
     public float moveSpeed = 0.01f;
@@ -29,30 +29,26 @@ public class Movement : MonoBehaviour
             if (plane.Raycast(ray, out var distance))
             {
                 worldPosition = ray.GetPoint(distance);
-                currentPos = chara.position;
+                currentPos = player.position;
+                alpha = 0;
                 move = true;
             }
         }
 
         if (move)
         {
-            chara.position =
+            player.position =
                 Vector3.Lerp(currentPos, worldPosition, alpha);
             alpha += moveSpeed * Time.deltaTime;
             
             Debug.Log(alpha);
             
-            if (alpha > 0.98f)
+            if (alpha > 0.99f)
             {
                 move = false;
                 alpha = 0;
             }
         }
-
     }
 
-    private void MoveCharacter(Vector3 newPos)
-    {
-        chara.position = newPos + new Vector3(0,0.1f,0);
-    }
 }
