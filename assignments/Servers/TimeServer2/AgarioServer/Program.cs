@@ -8,5 +8,12 @@ namespace AgarioServer
         {
             
         }
+        
+        
+        public void SendMessage<T>(T message)
+        {
+           // streamWriter.WriteLine(JsonSerializer.Serialize(message, options));
+           // streamWriter.Flush();
+        }
     }
 }
