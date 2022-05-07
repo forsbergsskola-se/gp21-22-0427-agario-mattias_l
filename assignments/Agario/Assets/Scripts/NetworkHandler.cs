@@ -46,7 +46,7 @@ public class NetworkHandler : MonoBehaviour
         if (playerName.Length < 1) return;
         
         _client = new TcpClient("127.0.0.1", port);
-       // _client.Connect(localAddress, port);
+  
         PlayerLink.Link.Init(_client, playerName);
     }
 
