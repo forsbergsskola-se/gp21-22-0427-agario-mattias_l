@@ -14,21 +14,6 @@ public class PlayerSelectPosition : MonoBehaviour
     public float moveSpeed = 0.01f;
     private Vector3 currentPos;
     
-    public delegate void NewPositionPickedDelegate(Vector3 newPosition);
-    public static event NewPositionPickedDelegate OnPositionChanged;
-    
-    void Start()
-    {
-       
-    }
-
-
-    private void OnDisable()
-    {
-       
-    }
-
-    
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -38,7 +23,6 @@ public class PlayerSelectPosition : MonoBehaviour
             if (plane.Raycast(ray, out var distance))
             {
                 PlayerLink.Link.UpdateLocation(ray.GetPoint(distance));
-            //    OnPositionChanged?.Invoke(ray.GetPoint(distance));
             }
         }
     }

@@ -1,7 +1,10 @@
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Sockets;
+using System.Threading;
 using UnityEngine;
 
 public class PlayerLink 
@@ -10,7 +13,19 @@ public class PlayerLink
     private StreamWriter streamWriter;
     private Vector3 _newLocation;
     private int _score;
+    public event Action<Vector3> NewPositionGot;
+    public event Action<int> ScoreUpdated;
     
+    public TcpClient Client { get;  private set; }
+    public string PlayerName { get;  private set; }
+    
+    public void Init(TcpClient client, string playerName)
+    {
+        Client = client;
+        PlayerName = playerName;
+        streamWriter = new StreamWriter(client.GetStream());
+        new Thread(Begin).Start();
+    }
     
     public static PlayerLink Link
     {
@@ -40,16 +55,19 @@ public class PlayerLink
         streamWriter.WriteLine(JsonUtility.ToJson(message));
         streamWriter.Flush();
     }
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
+    private void Begin()
     {
+        var streamReader = new StreamReader(Client.GetStream());
         
+        while (true)
+        {
+            var json = streamReader.ReadLine();
+            
+        //    var matchInfo = JsonUtility.FromJson<MatchInfoMessage>(json);
+        //    matchInfoMessageReceived?.Invoke(matchInfo);
+           
+        }
     }
+    
 }

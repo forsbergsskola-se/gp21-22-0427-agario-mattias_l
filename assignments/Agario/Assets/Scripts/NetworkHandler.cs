@@ -2,56 +2,52 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Sockets;
-
 using UnityEngine;
 using System.Text.Json;
-
-
-public class PlayerData
-{
-    public Vector3 position;
-}
+using UnityEngine.UI;
 
 public class NetworkHandler : MonoBehaviour
 {
-    private Vector3 newPosition;
-    private TcpClient client;
-    private readonly StreamWriter streamWriter;
-  
-    
-    
+    private TcpClient _client;
+    private Button startButton;
+    Int32 port = 13000;
+    IPAddress localAddress = IPAddress.Parse("127.0.0.1");
+    private InputField nameField;
+    private string playerName;
+
+
     private void Awake()
     {
-       
+        startButton = GetComponentInChildren<Button>();
+        startButton.onClick.AddListener(Connect);
+
+        nameField = GetComponentInChildren<InputField>();
+        nameField.onEndEdit.AddListener(SetPlayerName);
+        nameField.onValueChanged.AddListener(SetPlayerName);
     }
 
-    void Start()
+    private void SetPlayerName(string theName)
     {
-        PlayerSelectPosition.OnPositionChanged += PositionChanged;
+        playerName = theName;
     }
-
+    
     private void OnDisable()
     {
-        PlayerSelectPosition.OnPositionChanged -= PositionChanged;
+        startButton.onClick.RemoveAllListeners();
+        
+        nameField.onEndEdit.RemoveAllListeners();
+        nameField.onValueChanged.RemoveAllListeners();
     }
 
-    private void PositionChanged(Vector3 newPos)
+    private void Connect()
     {
-        SendMessage(newPos);
-    }
-    
-    public void SendMessage<T>(T message)
-    {
-        //TODO: figure this stuff out
-        streamWriter.WriteLine(JsonUtility.ToJson(message));
-      //  streamWriter.WriteLine(JsonSerializer.Serialize(message));
-        streamWriter.Flush();
-    }
-    
-    // Update is called once per frame
-    void Update()
-    {
+        if (playerName.Length < 1) return;
         
+        _client = new TcpClient("127.0.0.1", port);
+       // _client.Connect(localAddress, port);
+        PlayerLink.Link.Init(_client, playerName);
     }
+
 }

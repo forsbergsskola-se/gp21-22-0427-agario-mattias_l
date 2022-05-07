@@ -11,30 +11,30 @@ public class Movement : MonoBehaviour
     public Transform player;
     private bool move = false;
     private float alpha;
-    public float moveSpeed = 0.01f;
+    public float moveSpeed = 0.1f;
     private Vector3 currentPos;
     
     private void Awake()
     {
         cam = GetComponent<Camera>();
+        PlayerLink.Link.NewPositionGot += SetNewPosition;
+    }
+
+    private void OnDisable()
+    {
+        PlayerLink.Link.NewPositionGot -= SetNewPosition;
+    }
+
+    private void SetNewPosition(Vector3 newPos)
+    {
+        currentPos = player.position;
+        worldPosition = newPos;
+        alpha = 0;
+        move = true;
     }
     
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            // float distance;
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-
-            if (plane.Raycast(ray, out var distance))
-            {
-                worldPosition = ray.GetPoint(distance);
-                currentPos = player.position;
-                alpha = 0;
-                move = true;
-            }
-        }
-
         if (!move) return;
         
         player.position =
