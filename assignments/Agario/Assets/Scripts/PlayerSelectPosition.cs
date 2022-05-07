@@ -37,7 +37,8 @@ public class PlayerSelectPosition : MonoBehaviour
 
             if (plane.Raycast(ray, out var distance))
             {
-                OnPositionChanged?.Invoke(ray.GetPoint(distance));
+                PlayerLink.Link.UpdateLocation(ray.GetPoint(distance));
+            //    OnPositionChanged?.Invoke(ray.GetPoint(distance));
             }
         }
     }
