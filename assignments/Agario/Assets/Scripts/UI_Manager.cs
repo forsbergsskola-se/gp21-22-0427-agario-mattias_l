@@ -24,10 +24,5 @@ public class UI_Manager : MonoBehaviour
     {
         scoreBoard.text = $"Current score: {theScore}";
     }
-    
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
 }

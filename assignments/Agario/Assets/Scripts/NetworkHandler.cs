@@ -16,14 +16,15 @@ public class NetworkHandler : MonoBehaviour
     IPAddress localAddress = IPAddress.Parse("127.0.0.1");
     private InputField nameField;
     private string playerName;
+    public GameObject startScreen;
 
 
     private void Awake()
     {
-        startButton = GetComponentInChildren<Button>();
+        startButton = startScreen.GetComponentInChildren<Button>();
         startButton.onClick.AddListener(Connect);
 
-        nameField = GetComponentInChildren<InputField>();
+        nameField = startScreen.GetComponentInChildren<InputField>();
         nameField.onEndEdit.AddListener(SetPlayerName);
         nameField.onValueChanged.AddListener(SetPlayerName);
     }
@@ -45,6 +46,7 @@ public class NetworkHandler : MonoBehaviour
     {
         if (playerName.Length < 1) return;
         
+        startScreen.SetActive(false);
         _client = new TcpClient("127.0.0.1", port);
   
         PlayerLink.Link.Init(_client, playerName);
