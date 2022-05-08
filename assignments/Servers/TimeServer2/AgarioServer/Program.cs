@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace AgarioServer
 {
@@ -16,8 +17,6 @@ namespace AgarioServer
         {
             server = new TcpListener(localAddress, port);
             server.Start();
-
-            
             
             while (true)
             {
@@ -27,12 +26,19 @@ namespace AgarioServer
 
                 if (theGame == null)
                 {
+                    Console.WriteLine("Starting new game");
                     theGame = new Game();
-                    theGame.InitGame(client, (Players) theGame._links.Count);
+                    theGame.AddNewPlayer(client, (Players) theGame._links.Count);
+                    new Thread(theGame.Start).Start();
+                }
+                else if( theGame._links.Count < 6)
+                {
+                    Console.WriteLine("Assigning Player to existing game.");
+                    theGame.AddNewPlayer(client, (Players) theGame._links.Count);
                 }
                 else
                 {
-                    
+                    Console.WriteLine("Maximum player count reached");
                 }
             }
         }

@@ -2,6 +2,6 @@
 {
     public class GameMessage
     {
-        
+        public GameInfo gameInfo;
     }
 }

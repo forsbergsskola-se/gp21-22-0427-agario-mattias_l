@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
 
 public enum Players
@@ -18,20 +20,37 @@ namespace AgarioServer
         private GameInfo _gameInfo = new GameInfo();
         public Dictionary<Players, PlayerLink> _links = new ();
 
-        public void InitGame(TcpClient client, Players name)
+        public void AddNewPlayer(TcpClient client, Players name)
         {
             _links.Add(name, new PlayerLink(client));
         }
         
-        public void DistributeMatchInfo()
+        public void SendGameInfo()
         {
             var message = new GameMessage()
             {
-                matchInfo = this.matchInfo
+                gameInfo = _gameInfo
             };
             foreach (var l  in _links)
             {
                 l.Value?.SendMessage(message);
+            }
+        }
+        
+        
+        public void Start()
+        {
+            while (true)
+            {
+                if (_links.ContainsKey(Players.Player1))
+                {
+                    if (_gameInfo.players.All(x => x.Value.ready))
+                    {
+                        _gameInfo.started = true;
+                        Console.WriteLine("Game has started");
+                        SendGameInfo();
+                    }
+                }
             }
         }
         
