@@ -4,6 +4,6 @@ namespace AgarioServer
 {
     public class GameInfo
     {
-        private Dictionary<string, PlayerInfo> players = new ();
+        public Dictionary<string, PlayerInfo> players = new ();
     }
 }
