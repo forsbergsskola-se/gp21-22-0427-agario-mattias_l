@@ -5,16 +5,13 @@ using UnityEngine;
 
 public class PlayerMesh : MonoBehaviour
 {
-    Mesh thePLayerMesh;
+    Mesh playerMesh;
     MeshCollider meshCollider;
-    [NonSerialized] List<Vector3> vertices;
-    [NonSerialized] private List<int> triangles;
-    [NonSerialized] private List<Color> _colors;
-   // public List<MeshTiles> MeshTilesList = new ();
-
-    public Vector3 start;
-    public Vector3 direction;
-    public bool startMoving = false;
+    [NonSerialized] List<Vector3> vertices = new(); 
+    [NonSerialized] private List<int> triangles= new();
+    [NonSerialized] private List<Color> _colors= new();
+ 
+   
     
     // Start is called before the first frame update
     void Start()
@@ -22,11 +19,37 @@ public class PlayerMesh : MonoBehaviour
         
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Awake()
     {
-        
+        GetComponent<MeshFilter>().mesh = playerMesh = new Mesh();
+        meshCollider = new MeshCollider();
+        BuildAMesh();
     }
+
+    private void BuildAMesh()
+    {
+        Vector3 center = transform.position;
+        Vector3 extent1 = center + new Vector3(-1,0,0);
+        Vector3 extent2 = center + new Vector3(0,0,1);
+        
+        AddTriangle(extent2,center, extent1);
+        
+        for (int i = 0; i < 7; i++)
+        {
+            
+            Debug.Log(GetCircleEdge(i * 45, center, 3));
+        }
+    }
+
+    public Vector3 GetCircleEdge(float degree, Vector3 center, float extent)
+    {
+        var cos = Math.Cos(Mathf.PI / 180f * degree) * extent;
+        var sin = Math.Sin(Mathf.PI / 180f * degree) * extent;
+     
+
+        return center + new Vector3((float)cos, 0, (float) sin);
+    }
+    
     public void SetMaterial(Material material)
     {
         GetComponent<MeshRenderer>().material = material;
@@ -40,10 +63,10 @@ public class PlayerMesh : MonoBehaviour
     
     public void UpdateMesh()
     {
-        thePLayerMesh.Clear();
-        thePLayerMesh.SetVertices(vertices);
-        thePLayerMesh.SetTriangles(triangles, 0);
-        thePLayerMesh.RecalculateNormals();
+        playerMesh.Clear();
+        playerMesh.SetVertices(vertices);
+        playerMesh.SetTriangles(triangles, 0);
+        playerMesh.RecalculateNormals();
     }
     
     private void AddTriangle(Vector3 v1,Vector3 v2, Vector3 v3)
