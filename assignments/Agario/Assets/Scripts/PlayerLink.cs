@@ -64,7 +64,7 @@ public class PlayerLink
         {
             var json = streamReader.ReadLine();
             
-        //    var matchInfo = JsonUtility.FromJson<MatchInfoMessage>(json);
+            var matchInfo = JsonUtility.FromJson<GameInfoMessage>(json);
         //    matchInfoMessageReceived?.Invoke(matchInfo);
            
         }

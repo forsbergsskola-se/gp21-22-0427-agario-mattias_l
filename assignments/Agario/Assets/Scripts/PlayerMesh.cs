@@ -37,7 +37,6 @@ public class PlayerMesh : MonoBehaviour
         for (int i = 0; i < 7; i++)
         {
             
-            Debug.Log(GetCircleEdge(i * 45, center, 3));
         }
     }
 

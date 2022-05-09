@@ -7,4 +7,6 @@ namespace AgarioServer
         public bool started;
         public Dictionary<Players, PlayerInfo> players = new ();
     }
+    
+    
 }

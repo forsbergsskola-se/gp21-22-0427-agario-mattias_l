@@ -43,7 +43,7 @@ namespace AgarioServer
                 var json = streamReader.ReadLine();
                 if (_playerInfo.ready)
                 {
-
+                    
                 }
                 else
                 {
