@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 using Newtonsoft.Json;
@@ -14,8 +15,11 @@ public class PlayerLink
     private StreamWriter streamWriter;
     private Vector3 _newLocation;
     private int _score;
-    public event Action<Vector3> NewPositionGot;
-    public event Action<int> ScoreUpdated;
+    private int _rank;
+    
+    public Players playerNumber;
+    public event Action<Vector3, Players> NewPositionGot;
+    public event Action<int, Players> ScoreUpdated;
     
     public TcpClient Client { get;  private set; }
     public string PlayerName { get;  private set; }
@@ -28,7 +32,7 @@ public class PlayerLink
         new Thread(Begin).Start();
     }
     
-    public static PlayerLink Link
+    public static PlayerLink Instance
     {
         get
         {
@@ -39,6 +43,7 @@ public class PlayerLink
 
     public void UpdateLocation(Vector3 newLocation)
     {
+        _newLocation = newLocation;
         SendMessage(newLocation);
     }
     
@@ -64,10 +69,13 @@ public class PlayerLink
         while (true)
         {
             var json = streamReader.ReadLine();
-            var outPut = JsonConvert.DeserializeObject<Dictionary<PlayerTest, GameInfoMessage3>>(json);
-        //    var matchInfo = JsonUtility.FromJson<GameInfoMessage>(json);
-        //    matchInfoMessageReceived?.Invoke(matchInfo);
-           
+            var outPut = JsonConvert.DeserializeObject<Dictionary<Players, GameInfoMessage2>>(json);
+            foreach (var o in outPut)
+            {
+                var newPos = new Vector3(o.Value.X, o.Value.Y, o.Value.Z);
+                NewPositionGot?.Invoke(newPos, o.Key);
+                ScoreUpdated?.Invoke(o.Value.Score, o.Key);
+            }
         }
     }
     

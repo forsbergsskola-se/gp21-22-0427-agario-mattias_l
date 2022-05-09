@@ -22,7 +22,7 @@ public class PlayerSelectPosition : MonoBehaviour
 
             if (plane.Raycast(ray, out var distance))
             {
-                PlayerLink.Link.UpdateLocation(ray.GetPoint(distance));
+                PlayerLink.Instance.UpdateLocation(ray.GetPoint(distance));
             }
         }
     }

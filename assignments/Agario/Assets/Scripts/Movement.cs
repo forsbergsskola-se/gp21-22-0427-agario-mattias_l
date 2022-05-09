@@ -6,7 +6,7 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     private Camera cam;
-    public Vector3 worldPosition;
+    public Vector3 nextPosition;
     Plane plane = new Plane(Vector3.up, 0);
     public Transform player;
     private bool move = false;
@@ -17,18 +17,21 @@ public class Movement : MonoBehaviour
     private void Awake()
     {
         cam = GetComponent<Camera>();
-        PlayerLink.Link.NewPositionGot += SetNewPosition;
+        PlayerLink.Instance.NewPositionGot += SetNewPosition;
     }
 
     private void OnDisable()
     {
-        PlayerLink.Link.NewPositionGot -= SetNewPosition;
+        PlayerLink.Instance.NewPositionGot -= SetNewPosition;
     }
 
-    private void SetNewPosition(Vector3 newPos)
+    private void SetNewPosition(Vector3 newPos, Players playerNumber)
     {
+        if (PlayerLink.Instance.playerNumber != playerNumber) return;
+        if (currentPos == newPos) return;
+        
         currentPos = player.position;
-        worldPosition = newPos;
+        nextPosition = newPos;
         alpha = 0;
         move = true;
     }
@@ -38,7 +41,7 @@ public class Movement : MonoBehaviour
         if (!move) return;
         
         player.position =
-            Vector3.Lerp(currentPos, worldPosition, alpha);
+            Vector3.Lerp(currentPos, nextPosition, alpha);
         alpha += moveSpeed * Time.deltaTime;
 
         if (!(alpha > 0.99f)) return;

@@ -12,20 +12,16 @@ public class GameInfoMessage
 
 public class GameInfoMessage2
 {
-    public int S;
-    public int R;
+    public int Score;
+    public int Rank;
     public float X;
     public float Y;
     public float Z;
     
 }
 
-public class GameInfoMessage3
+
+public class StartInfo
 {
-    public int S;
-    public int R;
-    public float X;
-    public float Y;
-    public float Z;
-    
+    public int PlayerNumber;
 }

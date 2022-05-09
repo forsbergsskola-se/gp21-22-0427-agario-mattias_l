@@ -50,7 +50,7 @@ public class NetworkHandler : MonoBehaviour
         startScreen.SetActive(false);
         _client = new TcpClient("127.0.0.1", port);
   
-        PlayerLink.Link.Init(_client, playerName);
+        PlayerLink.Instance.Init(_client, playerName);
     }
 
 }
