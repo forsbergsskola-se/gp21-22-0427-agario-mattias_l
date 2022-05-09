@@ -54,11 +54,13 @@ public class UI_Manager : MonoBehaviour
         _messages.Add(PlayerTest.Player3, message2);
         
         var jsonDict2 = JsonConvert.SerializeObject(_messages);
-        
+        var outPut = JsonConvert.DeserializeObject<Dictionary<PlayerTest, GameInfoMessage3>>(jsonDict2);
+        Debug.Log(outPut[PlayerTest.Player1].R);
+
         var theJsonDict = JsonUtility.ToJson(dict._messages);
         var theJson = JsonUtility.ToJson(message);
         GetValuesFromStream(JsonUtility.ToJson(message));
-        Debug.Log(jsonDict2);
+        
         
         var choice =theJson.Where(x => x == ':').ToList();
         List<char> numbers = new();

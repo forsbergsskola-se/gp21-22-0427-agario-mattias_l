@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
 using System.Text.Json;
+using TMPro;
 using UnityEngine.UI;
 
 public class NetworkHandler : MonoBehaviour
@@ -14,7 +15,7 @@ public class NetworkHandler : MonoBehaviour
     private Button startButton;
     Int32 port = 13000;
     IPAddress localAddress = IPAddress.Parse("127.0.0.1");
-    private InputField nameField;
+    private TMP_InputField nameField;
     private string playerName;
     public GameObject startScreen;
 
@@ -24,7 +25,7 @@ public class NetworkHandler : MonoBehaviour
         startButton = startScreen.GetComponentInChildren<Button>();
         startButton.onClick.AddListener(Connect);
 
-        nameField = startScreen.GetComponentInChildren<InputField>();
+        nameField = startScreen.GetComponentInChildren<TMP_InputField>();
         nameField.onEndEdit.AddListener(SetPlayerName);
         nameField.onValueChanged.AddListener(SetPlayerName);
     }

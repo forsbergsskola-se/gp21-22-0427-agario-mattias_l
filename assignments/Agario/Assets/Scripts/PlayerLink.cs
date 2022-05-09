@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public class PlayerLink 
@@ -63,8 +64,8 @@ public class PlayerLink
         while (true)
         {
             var json = streamReader.ReadLine();
-            
-            var matchInfo = JsonUtility.FromJson<GameInfoMessage>(json);
+            var outPut = JsonConvert.DeserializeObject<Dictionary<PlayerTest, GameInfoMessage3>>(json);
+        //    var matchInfo = JsonUtility.FromJson<GameInfoMessage>(json);
         //    matchInfoMessageReceived?.Invoke(matchInfo);
            
         }
