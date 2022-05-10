@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
+using AgarioShared.AgarioShared.Messages;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -74,7 +75,7 @@ public class PlayerLink
         while (true)
         {
             var json = streamReader.ReadLine();
-            var outPut = JsonConvert.DeserializeObject<Dictionary<Players, GameInfoMessage2>>(json);
+            var outPut = JsonConvert.DeserializeObject<Dictionary<Players, UpdateMessage>>(json);
             foreach (var o in outPut)
             {
                 var newPos = new Vector3(o.Value.X, o.Value.Y, o.Value.Z);

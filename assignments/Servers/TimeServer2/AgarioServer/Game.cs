@@ -2,26 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
+using AgarioShared.AgarioShared.Enums;
+using AgarioShared.AgarioShared.Messages;
 
-public enum Players
-{
-    Player1,
-    Player2,
-    Player3,
-    Player4,
-    Player5,
-    Player6,
-}
 
 namespace AgarioServer
 {
     public class Game
     {
         private GameInfo _gameInfo = new GameInfo();
-        public Dictionary<Players, PlayerLink> _links = new ();
-        public Dictionary<Players, PlayerInfo> playersInfo = new ();
+        public Dictionary<PlayerCounter, PlayerLink> _links = new ();
+        public Dictionary<PlayerCounter, UpdateMessage> playersInfo = new ();
 
-        public void AddNewPlayer(TcpClient client, Players name)
+        public void AddNewPlayer(TcpClient client, PlayerCounter name)
         {
             _links.Add(name, new PlayerLink(client));
         }
@@ -53,7 +46,7 @@ namespace AgarioServer
         {
             while (true)
             {
-                if (_links.ContainsKey(Players.Player1))
+                if (_links.ContainsKey(PlayerCounter.Player1))
                 {
                     _gameInfo.started = true;
                     if (_gameInfo.players.All(x => x.Value.ready))

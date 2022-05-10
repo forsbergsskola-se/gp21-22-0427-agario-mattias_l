@@ -7,5 +7,6 @@ namespace AgarioShared.AgarioShared.Messages
         public float X;
         public float Y;
         public float Z;
+        public bool ready;
     }
 }

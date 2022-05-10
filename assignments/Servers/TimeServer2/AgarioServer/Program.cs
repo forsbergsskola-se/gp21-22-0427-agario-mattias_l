@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Numerics;
 using System.Threading;
+using AgarioShared.AgarioShared.Enums;
 
 namespace AgarioServer
 {
@@ -31,13 +32,13 @@ namespace AgarioServer
                 {
                     Console.WriteLine("Starting new game");
                     theGame = new Game();
-                    theGame.AddNewPlayer(client, (Players) theGame._links.Count);
+                    theGame.AddNewPlayer(client, (PlayerCounter) theGame._links.Count);
                     new Thread(theGame.Start).Start();
                 }
                 else if( theGame._links.Count < maxPlayerCount)
                 {
                     Console.WriteLine("Assigning Player to existing game.");
-                    theGame.AddNewPlayer(client, (Players) theGame._links.Count);
+                    theGame.AddNewPlayer(client, (PlayerCounter) theGame._links.Count);
                 }
                 else
                 {

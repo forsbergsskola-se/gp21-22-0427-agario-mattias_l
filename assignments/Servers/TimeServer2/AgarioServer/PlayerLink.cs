@@ -3,6 +3,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Text.Json;
 using System.Threading;
+using AgarioShared.AgarioShared.Messages;
 
 namespace AgarioServer
 {
@@ -10,7 +11,7 @@ namespace AgarioServer
     {
         private TcpClient PlayerClient { get; }
         
-        public readonly PlayerInfo _playerInfo;
+        public readonly UpdateMessage _playerInfo;
         private readonly StreamWriter streamWriter;
 
         private readonly JsonSerializerOptions options = new()
@@ -47,9 +48,13 @@ namespace AgarioServer
                 }
                 else
                 {
+                    if (json != null)
+                    {
+                        
+                    }
                     var loginMessage = JsonSerializer.Deserialize<StartMessage>(json, options);
                    // Console.WriteLine($"[#{_match.Id}] Player '{loginMessage.playerName}' logged in.");
-                    _playerInfo.name = loginMessage.name;
+                   // _playerInfo = loginMessage.name;
                     _playerInfo.ready = true;
                 }
 
