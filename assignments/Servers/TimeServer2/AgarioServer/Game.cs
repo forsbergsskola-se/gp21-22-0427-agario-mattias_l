@@ -13,9 +13,9 @@ namespace AgarioServer
         private GameInfo _gameInfo = new GameInfo();
         public Dictionary<PlayerCounter, PlayerLink> _links = new ();
         
-        public void AddNewPlayer(TcpClient client, PlayerCounter name)
+        public void AddNewPlayer(TcpClient client, PlayerCounter playerCounter)
         {
-            _links.Add(name, new PlayerLink(client));
+            _links.Add(playerCounter, new PlayerLink(client));
         }
         
         public void SendGameInfo()

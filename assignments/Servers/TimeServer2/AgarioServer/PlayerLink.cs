@@ -55,22 +55,30 @@ namespace AgarioServer
             return MessageTypes.Score;
         }
 
+        private void ProcessStartMessage(string json)
+        {
+            var loginMessage = JsonSerializer.Deserialize<StartMessage>(json, options);
+            if (loginMessage == null) return;
+            
+            Console.WriteLine($"[#{PlayerNumber}] Player '{loginMessage.PlayerName}' logged in.");
+            loginMessage.PlayerCount = PlayerNumber;
+            _playerInfo.IsActive = true;
+            
+            SendMessage(loginMessage);
+        }
+        
         private void ReadMessage(string json)
         {
-            var type = GetMessageType(json);
-
-            switch (type)
+            switch (GetMessageType(json))
             {
+                case MessageTypes.Start:
+                    ProcessStartMessage(json);
+                    break;
+                
                 case MessageTypes.Position:
                     _positionInfo =  JsonSerializer.Deserialize<PositionMessage>(json, options);
                     break;
-                case MessageTypes.Start:
-                    var loginMessage = JsonSerializer.Deserialize<StartMessage>(json, options);
-                        
-                    Console.WriteLine($"[#{PlayerNumber}] Player '{loginMessage.PlayerName}' logged in.");
-                    //_playerInfo = loginMessage.name;
-                    _playerInfo.IsActive = true;
-                    break;
+                
                 case MessageTypes.Score:
                     var scoreMessage = JsonSerializer.Deserialize<ScoreMessage>(json, options);
                     break;
