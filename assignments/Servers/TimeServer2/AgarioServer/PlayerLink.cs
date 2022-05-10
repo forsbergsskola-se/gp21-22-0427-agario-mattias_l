@@ -10,7 +10,7 @@ namespace AgarioServer
     {
         private TcpClient PlayerClient { get; }
         
-        private readonly PlayerInfo _playerInfo;
+        public readonly PlayerInfo _playerInfo;
         private readonly StreamWriter streamWriter;
 
         private readonly JsonSerializerOptions options = new()

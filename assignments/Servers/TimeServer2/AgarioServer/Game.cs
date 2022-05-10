@@ -19,6 +19,7 @@ namespace AgarioServer
     {
         private GameInfo _gameInfo = new GameInfo();
         public Dictionary<Players, PlayerLink> _links = new ();
+        public Dictionary<Players, PlayerInfo> playersInfo = new ();
 
         public void AddNewPlayer(TcpClient client, Players name)
         {
@@ -31,10 +32,20 @@ namespace AgarioServer
             {
                 gameInfo = _gameInfo
             };
+            playersInfo.Clear();
+            
+            
             foreach (var l  in _links)
             {
-                l.Value?.SendMessage(message);
+                playersInfo.Add(l.Key, l.Value._playerInfo);
+            //    l.Value?.SendMessage(message);
             }
+
+            foreach (var p in _links)
+            {   
+                p.Value.SendMessage(playersInfo);
+            }
+            
         }
         
         

@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UPDClient", "UPDClient\UPDC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgarioServer", "AgarioServer\AgarioServer.csproj", "{A392BA43-54E4-406F-BE6C-23637BABD74B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgarioShared", "..\..\Agario\AgarioShared.csproj", "{F02EDDC9-819B-6811-CC0A-A5E1F2BEF94D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{A392BA43-54E4-406F-BE6C-23637BABD74B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A392BA43-54E4-406F-BE6C-23637BABD74B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A392BA43-54E4-406F-BE6C-23637BABD74B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F02EDDC9-819B-6811-CC0A-A5E1F2BEF94D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F02EDDC9-819B-6811-CC0A-A5E1F2BEF94D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F02EDDC9-819B-6811-CC0A-A5E1F2BEF94D}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{F02EDDC9-819B-6811-CC0A-A5E1F2BEF94D}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal

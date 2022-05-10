@@ -12,6 +12,7 @@ public class GameInfoMessage
 
 public class GameInfoMessage2
 {
+    public char Type;
     public int Score;
     public int Rank;
     public float X;

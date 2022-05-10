@@ -62,6 +62,11 @@ public class PlayerLink
         streamWriter.Flush();
     }
 
+    public void UpdateRankings()
+    {
+        
+    }
+
     private void Begin()
     {
         var streamReader = new StreamReader(Client.GetStream());
