@@ -1,13 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using AgarioShared.AgarioShared.Enums;
 using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-    private Camera cam;
     public Vector3 nextPosition;
-    Plane plane = new Plane(Vector3.up, 0);
+   
     public Transform player;
     private bool move = false;
     private float alpha;
@@ -16,7 +16,6 @@ public class Movement : MonoBehaviour
     
     private void Awake()
     {
-        cam = GetComponent<Camera>();
         PlayerLink.Instance.NewPositionGot += SetNewPosition;
     }
 
@@ -25,7 +24,7 @@ public class Movement : MonoBehaviour
         PlayerLink.Instance.NewPositionGot -= SetNewPosition;
     }
 
-    private void SetNewPosition(Vector3 newPos, Players playerNumber)
+    private void SetNewPosition(Vector3 newPos, PlayerCounter playerNumber)
     {
         if (PlayerLink.Instance.playerNumber != playerNumber) return;
         if (currentPos == newPos) return;

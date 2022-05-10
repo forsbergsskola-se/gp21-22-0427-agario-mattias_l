@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
+using AgarioShared.AgarioShared.Enums;
 using AgarioShared.AgarioShared.Messages;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -18,9 +18,9 @@ public class PlayerLink
     private int _score;
     private int _rank;
     
-    public Players playerNumber;
-    public event Action<Vector3, Players> NewPositionGot;
-    public event Action<int, Players> ScoreUpdated;
+    public PlayerCounter playerNumber;
+    public event Action<Vector3, PlayerCounter> NewPositionGot;
+    public event Action<int, PlayerCounter> ScoreUpdated;
     
     public TcpClient Client { get;  private set; }
     public string PlayerName { get;  private set; }
@@ -67,6 +67,27 @@ public class PlayerLink
     {
         
     }
+    
+    private MessageTypes GetMessageType(string json)
+    {
+        var t = json.IndexOf('T', 0, 5);
+        var t2 = json.Substring(t + 3, 2);
+        Debug.Log(t2);
+
+        switch (t2)
+        {
+            case "80":
+                return MessageTypes.Position;
+            case "87":
+                return MessageTypes.Start;
+            case "83":
+                return MessageTypes.Score;
+               
+        }
+       
+        return MessageTypes.Score;
+    }
+    
 
     private void Begin()
     {
@@ -75,7 +96,13 @@ public class PlayerLink
         while (true)
         {
             var json = streamReader.ReadLine();
-            var outPut = JsonConvert.DeserializeObject<Dictionary<Players, UpdateMessage>>(json);
+
+            if (json != null)
+            {
+                
+            }
+            
+            var outPut = JsonConvert.DeserializeObject<Dictionary<PlayerCounter, UpdateMessage>>(json);
             foreach (var o in outPut)
             {
                 var newPos = new Vector3(o.Value.X, o.Value.Y, o.Value.Z);

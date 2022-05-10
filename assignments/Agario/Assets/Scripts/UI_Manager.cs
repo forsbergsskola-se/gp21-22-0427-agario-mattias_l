@@ -10,15 +10,6 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
-public enum Players
-{
-    Player1,
-    Player2,
-    Player3,
-    Player4,
-    Player5,
-    Player6
-}
 
 public class UI_Manager : MonoBehaviour
 {
@@ -77,7 +68,7 @@ public class UI_Manager : MonoBehaviour
         PlayerLink.Instance.ScoreUpdated -= NewScore;
     }
 
-    private void NewScore(int theScore, Players playerNumber)
+    private void NewScore(int theScore, PlayerCounter playerNumber)
     {
         if (PlayerLink.Instance.playerNumber != playerNumber) return;
         

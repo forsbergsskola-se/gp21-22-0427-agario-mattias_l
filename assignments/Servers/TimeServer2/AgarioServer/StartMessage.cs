@@ -2,6 +2,6 @@
 {
     public class StartMessage
     {
-        public string name;
+        public string PlayerName;
     }
 }
