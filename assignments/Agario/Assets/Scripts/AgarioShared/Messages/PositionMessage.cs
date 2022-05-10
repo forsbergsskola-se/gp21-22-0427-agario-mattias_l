@@ -1,12 +1,10 @@
 namespace AgarioShared.AgarioShared.Messages
 {
-    public class UpdateMessage
+    public class PositionMessage
     {
-        public int Score;
-        public int Rank;
+        public char T = 'P';
         public float X;
         public float Y;
         public float Z;
-        public bool IsActive;
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using AgarioShared.AgarioShared.Messages;
 using Newtonsoft.Json;
 using TMPro;
 using Unity.VisualScripting;
@@ -27,11 +28,21 @@ public class UI_Manager : MonoBehaviour
  
     void Start()
     {
+        PositionMessage mess = new PositionMessage()
+        {
+            X = 5.67f,
+            Y = 4.87f,
+            Z = 2.47f,
+        };
+
+        Debug.Log(JsonUtility.ToJson(mess));
         
         scoreBoard = GetComponentInChildren<TextMeshProUGUI>();
         scoreBoard.text = "Current score: 0";
         PlayerLink.Instance.ScoreUpdated += NewScore;
     }
+    
+    
     
     private void OnDisable()
     {

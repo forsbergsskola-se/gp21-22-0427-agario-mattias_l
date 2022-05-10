@@ -49,7 +49,7 @@ namespace AgarioServer
                 if (_links.ContainsKey(PlayerCounter.Player1))
                 {
                     _gameInfo.started = true;
-                    if (_gameInfo.players.All(x => x.Value.ready))
+                    if (_gameInfo.players.All(x => x.Value.IsActive))
                     {
                         Console.WriteLine("Game has started");
                         SendGameInfo();

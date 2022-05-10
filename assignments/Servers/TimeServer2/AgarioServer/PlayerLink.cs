@@ -42,7 +42,7 @@ namespace AgarioServer
             while (true)
             {
                 var json = streamReader.ReadLine();
-                if (_playerInfo.ready)
+                if (_playerInfo.IsActive)
                 {
                     
                 }
@@ -55,7 +55,7 @@ namespace AgarioServer
                     var loginMessage = JsonSerializer.Deserialize<StartMessage>(json, options);
                    // Console.WriteLine($"[#{_match.Id}] Player '{loginMessage.playerName}' logged in.");
                    // _playerInfo = loginMessage.name;
-                    _playerInfo.ready = true;
+                    _playerInfo.IsActive = true;
                 }
 
             //    .DistributeMatchInfo();
