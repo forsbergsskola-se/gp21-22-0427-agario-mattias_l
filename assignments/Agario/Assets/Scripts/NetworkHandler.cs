@@ -6,6 +6,8 @@ using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
 using System.Text.Json;
+using AgarioShared.AgarioShared.Enums;
+using AgarioShared.AgarioShared.Messages;
 using TMPro;
 using UnityEngine.UI;
 
@@ -19,6 +21,7 @@ public class NetworkHandler : MonoBehaviour
     private string playerName;
     public GameObject startScreen;
     public GameObject spawnablePlayer;
+    public Dictionary<PlayerCounter, GameObject> spawnedActors = new();
 
 
     private void Awake()
@@ -29,6 +32,26 @@ public class NetworkHandler : MonoBehaviour
         nameField = startScreen.GetComponentInChildren<TMP_InputField>();
         nameField.onEndEdit.AddListener(SetPlayerName);
         nameField.onValueChanged.AddListener(SetPlayerName);
+        PlayerLink.Instance.StartMultiAction += OnstartMulti;
+    }
+
+   
+    
+    private void OnstartMulti(StartDictionaryMessage dict)
+    {
+        Debug.Log("Spawning players");
+        Debug.Log(dict.PositionMessages.Count);
+        foreach (var p in dict.PositionMessages)
+        {
+            Debug.Log("Spawn one");
+            if (!spawnedActors.ContainsKey(p.Key))
+            {
+                Debug.Log($"Spawning player{dict.StartMessages[p.Key].PlayerName}");
+                var pos = new Vector3(p.Value.X, p.Value.Y, p.Value.Z);
+                var spawn = Instantiate(spawnablePlayer, pos, Quaternion.identity, Camera.main.transform);
+                spawnedActors.Add(p.Key, spawn);
+            }
+        }
     }
 
     private void SetPlayerName(string theName)
@@ -38,6 +61,7 @@ public class NetworkHandler : MonoBehaviour
     
     private void OnDisable()
     {
+        PlayerLink.Instance.StartMultiAction -= OnstartMulti;
         startButton.onClick.RemoveAllListeners();
         
         nameField.onEndEdit.RemoveAllListeners();

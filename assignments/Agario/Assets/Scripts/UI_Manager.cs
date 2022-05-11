@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using AgarioShared;
 using AgarioShared.AgarioShared.Enums;
 using AgarioShared.AgarioShared.Messages;
 using Newtonsoft.Json;
@@ -21,22 +22,17 @@ public class UI_Manager : MonoBehaviour
  
     void Start()
     {
-        PositionMessage mess = new PositionMessage()
-        {
-            X = 5.67f,
-            Y = 4.87f,
-            Z = 2.47f,
-        };
-        StartMessage start = new StartMessage()
-        {
-            PlayerCount = PlayerCounter.Player1,
-            PlayerName = "bort"
-        };
 
-        var aJson =JsonUtility.ToJson(mess);
-        var aJson2 =JsonUtility.ToJson(start);
-        Debug.Log(aJson2);
-        Debug.Log(GetMessageType(aJson2));
+        var dict = new ScoreDictionaryMessage();
+        dict.ScoreMessages.Add(PlayerCounter.Player1, new ScoreMessage()
+        {
+            
+        });
+
+        var aJson =JsonUtility.ToJson(dict);
+     //   var aJson2 =JsonUtility.FromJson(aJson);
+     //   Debug.Log(aJson2);
+     //   Debug.Log(GetMessageType(aJson2));
         
         scoreBoard = GetComponentInChildren<TextMeshProUGUI>();
         scoreBoard.text = "Current score: 0";
@@ -51,16 +47,15 @@ public class UI_Manager : MonoBehaviour
 
        switch (t2)
        {
-           case "80":
-               return MessageTypes.Position;
-           case "87":
-               return MessageTypes.Start;
-           case "83":
-               return MessageTypes.Score;
-               
+           case "67":
+               return MessageTypes.StartDictionary;
+           case "77":
+               return MessageTypes.PositionDictionary;
+           case "12":
+               return MessageTypes.ScoreDictionary;
        }
        
-       return MessageTypes.Score;
+       return MessageTypes.Error;
     }
     
     private void OnDisable()

@@ -4,7 +4,11 @@ namespace AgarioShared.AgarioShared.Enums
     public enum MessageTypes 
     {
         Position,
+        PositionDictionary,
         Score,
-        Start
+        ScoreDictionary,
+        Start,
+        StartDictionary,
+        Error
     }
 }

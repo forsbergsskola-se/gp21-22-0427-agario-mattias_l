@@ -1,8 +1,9 @@
 namespace AgarioShared.AgarioShared.Messages
 {
+    [System.Serializable]
     public class ScoreMessage
     {
-        public char T = 'S';
+        public int T = 'S';
         public int Score;
     }
 }

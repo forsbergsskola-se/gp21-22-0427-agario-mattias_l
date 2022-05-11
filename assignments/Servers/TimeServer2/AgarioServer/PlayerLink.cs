@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net.Sockets;
+using System.Numerics;
 using System.Text.Json;
 using System.Threading;
 using AgarioShared.AgarioShared.Enums;
@@ -12,15 +13,20 @@ namespace AgarioServer
     {
         private TcpClient PlayerClient { get; }
         public PlayerCounter PlayerNumber;
+        public Vector3 position;
+        public int score;
+        
         public readonly UpdateMessage _playerInfo;
+        public string playerName;
         public  PositionMessage _positionInfo = new ();
-        private readonly StreamWriter streamWriter;
+        private  StreamWriter streamWriter;
         private Game theParent;
         public event Action<float, float, float, PlayerCounter> UpdatePosition;
         
         private readonly JsonSerializerOptions options = new()
         {
-            IncludeFields = true
+            IncludeFields = true,
+            
         };
         
         public PlayerLink(TcpClient client, Game parentRef)
@@ -33,6 +39,10 @@ namespace AgarioServer
 
         public void SendMessage<T>(T message)
         {
+            if (streamWriter == null)
+            {
+                streamWriter = new StreamWriter(PlayerClient.GetStream());
+            }
             streamWriter.WriteLine(JsonSerializer.Serialize(message, options));
             streamWriter.Flush();
         }
@@ -54,27 +64,21 @@ namespace AgarioServer
                
             }
        
-            return MessageTypes.Score;
+            return MessageTypes.Error;
         }
 
         private void ProcessStartMessage(string json)
         {
             var loginMessage = JsonSerializer.Deserialize<StartMessage>(json, options);
             if (loginMessage == null) return;
-            
+
             Console.WriteLine($"[#{PlayerNumber}] Player '{loginMessage.PlayerName}' logged in.");
+            playerName = loginMessage.PlayerName;
             loginMessage.PlayerCount = PlayerNumber;
-            _playerInfo.IsActive = true;
-            
             SendMessage(loginMessage);
+            theParent.SendStartMessages();
         }
-
-        private void ProcessPosMessage(string json)
-        {
-            _positionInfo =  JsonSerializer.Deserialize<PositionMessage>(json, options);
-            
-        }
-
+        
         private void ReadMessage(string json)
         {
             switch (GetMessageType(json))
@@ -85,6 +89,7 @@ namespace AgarioServer
                 
                 case MessageTypes.Position:
                     _positionInfo =  JsonSerializer.Deserialize<PositionMessage>(json, options);
+                    theParent.SendPositionInfo();
                     break;
                 
                 case MessageTypes.Score:
@@ -102,7 +107,7 @@ namespace AgarioServer
                 var json = streamReader.ReadLine();
                 
                 if (json == null) return;
-                
+
                 ReadMessage(json);
             }
         }

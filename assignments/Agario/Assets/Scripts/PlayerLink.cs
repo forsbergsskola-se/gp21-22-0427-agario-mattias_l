@@ -21,6 +21,8 @@ public class PlayerLink
     public PlayerCounter playerNumber;
     public event Action<Vector3, PlayerCounter> NewPositionGot;
     public event Action<int, PlayerCounter> ScoreUpdated;
+    public event Action<StartDictionaryMessage> StartMultiAction;
+    public event Action<StartMessage> StartSingleAction;
     
     public TcpClient Client { get;  private set; }
     public string PlayerName { get;  private set; }
@@ -76,22 +78,37 @@ public class PlayerLink
     {
         var t = json.IndexOf('T', 0, 5);
         var t2 = json.Substring(t + 3, 2);
-        Debug.Log(t2);
 
         switch (t2)
         {
-            case "80":
-                return MessageTypes.Position;
+            case "67":
+                return MessageTypes.StartDictionary;
+            case "77":
+                return MessageTypes.PositionDictionary;
+            case "12":
+                return MessageTypes.ScoreDictionary;
             case "87":
                 return MessageTypes.Start;
-            case "83":
-                return MessageTypes.Score;
-               
         }
        
-        return MessageTypes.Score;
+        return MessageTypes.Error;
     }
-    
+
+    private void ProcessMessage(string json)
+    {
+        switch (GetMessageType(json))
+        {
+            case MessageTypes.StartDictionary:
+                var dict = JsonUtility.FromJson<StartDictionaryMessage>(json);
+                StartMultiAction?.Invoke(dict);
+                break;
+            case MessageTypes.Start:
+                var dict1 = JsonUtility.FromJson<StartMessage>(json);
+                playerNumber = dict1.PlayerCount;
+                Debug.Log($"Player{dict1.PlayerCount} With name {dict1.PlayerName} logged in");
+                break;
+        }
+    }
 
     private void Begin()
     {
@@ -101,18 +118,9 @@ public class PlayerLink
         {
             var json = streamReader.ReadLine();
 
-            if (json != null)
-            {
-                
-            }
+            if (json == null) return;
             
-            var outPut = JsonConvert.DeserializeObject<Dictionary<PlayerCounter, UpdateMessage>>(json);
-            foreach (var o in outPut)
-            {
-                var newPos = new Vector3(o.Value.X, o.Value.Y, o.Value.Z);
-                NewPositionGot?.Invoke(newPos, o.Key);
-                ScoreUpdated?.Invoke(o.Value.Score, o.Key);
-            }
+            ProcessMessage(json);
         }
     }
     
