@@ -7,8 +7,6 @@ namespace AgarioShared.AgarioShared.Messages
     public class StartDictionaryMessage
     {
         public int T = 'C';
-        public Dictionary<PlayerCounter, StartMessage> StartMessages = new();
-        public Dictionary<PlayerCounter, PositionMessage> PositionMessages = new();
-        public Dictionary<PlayerCounter, ScoreMessage> ScoreMessages = new();
+        public Dictionary<PlayerCounter, StartSetupMessage> StartMessages = new();
     }
 }

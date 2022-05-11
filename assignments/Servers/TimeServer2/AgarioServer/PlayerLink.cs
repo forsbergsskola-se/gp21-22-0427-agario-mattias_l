@@ -3,9 +3,12 @@ using System.IO;
 using System.Net.Sockets;
 using System.Numerics;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using AgarioShared.AgarioShared.Enums;
 using AgarioShared.AgarioShared.Messages;
+using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace AgarioServer
 {
@@ -26,7 +29,7 @@ namespace AgarioServer
         private readonly JsonSerializerOptions options = new()
         {
             IncludeFields = true,
-            
+
         };
         
         public PlayerLink(TcpClient client, Game parentRef)
@@ -44,9 +47,20 @@ namespace AgarioServer
                 streamWriter = new StreamWriter(PlayerClient.GetStream());
             }
             streamWriter.WriteLine(JsonSerializer.Serialize(message, options));
+            Console.WriteLine(JsonSerializer.Serialize(message, options));
             streamWriter.Flush();
         }
-        
+
+        public void SendMessageJsonConvert<T>(T message)
+        {
+            if (streamWriter == null)
+            {
+                streamWriter = new StreamWriter(PlayerClient.GetStream());
+            }
+            var obj =JsonConvert.SerializeObject(message, Formatting.Indented);
+            streamWriter.WriteLine(obj);
+            streamWriter.Flush();
+        }
         
         private MessageTypes GetMessageType(string json)
         {

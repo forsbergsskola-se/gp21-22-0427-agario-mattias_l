@@ -22,17 +22,26 @@ public class UI_Manager : MonoBehaviour
  
     void Start()
     {
-
+        var dict3 = new StartDictionaryMessage();
+        dict3.StartMessages.Add(PlayerCounter.Player1, new StartSetupMessage()
+        {
+            X = 4,
+            Y = 8,
+            Z = 56,
+            Rank = 4,
+            Score = 88
+        });
+       
+      
         var dict = new ScoreDictionaryMessage();
         dict.ScoreMessages.Add(PlayerCounter.Player1, new ScoreMessage()
         {
-            
+            Score = 123  
         });
 
-        var aJson =JsonUtility.ToJson(dict);
-     //   var aJson2 =JsonUtility.FromJson(aJson);
-     //   Debug.Log(aJson2);
-     //   Debug.Log(GetMessageType(aJson2));
+        var aJson =JsonConvert.SerializeObject(dict, Formatting.None);
+        Debug.Log(aJson);
+
         
         scoreBoard = GetComponentInChildren<TextMeshProUGUI>();
         scoreBoard.text = "Current score: 0";

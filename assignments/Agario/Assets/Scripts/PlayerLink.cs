@@ -76,7 +76,7 @@ public class PlayerLink
     
     private MessageTypes GetMessageType(string json)
     {
-        var t = json.IndexOf('T', 0, 5);
+        var t = json.IndexOf('T', 0);
         var t2 = json.Substring(t + 3, 2);
 
         switch (t2)
@@ -96,11 +96,13 @@ public class PlayerLink
 
     private void ProcessMessage(string json)
     {
+        Debug.Log(json);
         switch (GetMessageType(json))
         {
             case MessageTypes.StartDictionary:
                 var dict = JsonUtility.FromJson<StartDictionaryMessage>(json);
-                StartMultiAction?.Invoke(dict);
+                var dict3 = JsonConvert.DeserializeObject<StartDictionaryMessage>(json);
+                StartMultiAction?.Invoke(dict3);
                 break;
             case MessageTypes.Start:
                 var dict1 = JsonUtility.FromJson<StartMessage>(json);

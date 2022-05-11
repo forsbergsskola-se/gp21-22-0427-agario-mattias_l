@@ -40,13 +40,13 @@ public class NetworkHandler : MonoBehaviour
     private void OnstartMulti(StartDictionaryMessage dict)
     {
         Debug.Log("Spawning players");
-        Debug.Log(dict.PositionMessages.Count);
-        foreach (var p in dict.PositionMessages)
+        Debug.Log(dict.StartMessages.Count);
+        foreach (var p in dict.StartMessages)
         {
             Debug.Log("Spawn one");
             if (!spawnedActors.ContainsKey(p.Key))
             {
-                Debug.Log($"Spawning player{dict.StartMessages[p.Key].PlayerName}");
+              //  Debug.Log($"Spawning player{dict.StartMessages[p.Key].PlayerName}");
                 var pos = new Vector3(p.Value.X, p.Value.Y, p.Value.Z);
                 var spawn = Instantiate(spawnablePlayer, pos, Quaternion.identity, Camera.main.transform);
                 spawnedActors.Add(p.Key, spawn);

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Sockets;
 using AgarioShared.AgarioShared.Enums;
 using AgarioShared.AgarioShared.Messages;
+using Newtonsoft.Json;
 
 
 namespace AgarioServer
@@ -22,6 +23,7 @@ namespace AgarioServer
         public void SendStartMessages()
         {
             var dict = new StartDictionaryMessage();
+            var dict2 = new PositionDictionaryMessage();
             
             foreach (var s in _links)
             {
@@ -40,16 +42,18 @@ namespace AgarioServer
                 {
                     Score = s.Value.score
                 };
-                
+                dict2.PositionMessages.Add(s.Key,mess1);
                 dict.StartMessages.Add(s.Key, mess);
                 dict.PositionMessages.Add(s.Key, mess1);
                 dict.ScoreMessages.Add(s.Key, mess2);
             }
-            Console.WriteLine(dict.PositionMessages.Count);
+
+            var obj =JsonConvert.SerializeObject(dict2, Formatting.None);
+            Console.WriteLine(obj);
 
             foreach (var l in _links)
             {
-                l.Value.SendMessage(dict);
+                l.Value.SendMessageJsonConvert(obj);
             }
         }
         
