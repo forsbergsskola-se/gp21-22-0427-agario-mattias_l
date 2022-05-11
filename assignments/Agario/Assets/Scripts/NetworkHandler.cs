@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
 using System.Text.Json;
+using System.Threading;
 using AgarioShared.AgarioShared.Enums;
 using AgarioShared.AgarioShared.Messages;
 using TMPro;
@@ -43,17 +44,22 @@ public class NetworkHandler : MonoBehaviour
         Debug.Log(dict.StartMessages.Count);
         foreach (var p in dict.StartMessages)
         {
-            Debug.Log("Spawn one");
             if (!spawnedActors.ContainsKey(p.Key))
             {
               //  Debug.Log($"Spawning player{dict.StartMessages[p.Key].PlayerName}");
                 var pos = new Vector3(p.Value.X, p.Value.Y, p.Value.Z);
-                var spawn = Instantiate(spawnablePlayer, pos, Quaternion.identity, Camera.main.transform);
-                spawnedActors.Add(p.Key, spawn);
+                Dispatcher.RunOnMainThread(SimpleSpawn);
+              //  var spawn = Instantiate(spawnablePlayer, pos, Quaternion.identity);
+             //   spawnedActors.Add(p.Key, spawn);
             }
         }
     }
 
+    private void SimpleSpawn()
+    {
+        var spawn = Instantiate(spawnablePlayer, new Vector3(0,0,0), Quaternion.identity);
+    }
+    
     private void SetPlayerName(string theName)
     {
         playerName = theName;
@@ -75,7 +81,7 @@ public class NetworkHandler : MonoBehaviour
         startScreen.SetActive(false);
         _client = new TcpClient("127.0.0.1", port);
   
-        PlayerLink.Instance.Init(_client, playerName);
+        PlayerLink.Instance.Init(_client, playerName, transform.GetComponent<Dispatcher>());
     }
 
 }

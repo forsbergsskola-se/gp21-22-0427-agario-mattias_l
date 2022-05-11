@@ -31,17 +31,20 @@ public class UI_Manager : MonoBehaviour
             Rank = 4,
             Score = 88
         });
-       
-      
-        var dict = new ScoreDictionaryMessage();
-        dict.ScoreMessages.Add(PlayerCounter.Player1, new ScoreMessage()
+        dict3.StartMessages.Add(PlayerCounter.Player2, new StartSetupMessage()
         {
-            Score = 123  
+            X = 4,
+            Y = 6,
+            Z = 436,
+            Rank = 1,
+            Score = 188
         });
 
-        var aJson =JsonConvert.SerializeObject(dict, Formatting.None);
+        var aJson =JsonConvert.SerializeObject(dict3, Formatting.None);
         Debug.Log(aJson);
-
+        var Dict = JsonConvert.DeserializeObject<StartDictionaryMessage>(aJson);
+        
+        
         
         scoreBoard = GetComponentInChildren<TextMeshProUGUI>();
         scoreBoard.text = "Current score: 0";

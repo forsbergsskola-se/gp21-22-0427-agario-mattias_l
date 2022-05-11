@@ -23,15 +23,17 @@ public class PlayerLink
     public event Action<int, PlayerCounter> ScoreUpdated;
     public event Action<StartDictionaryMessage> StartMultiAction;
     public event Action<StartMessage> StartSingleAction;
-    
+    private Dispatcher _dispatcher;
     public TcpClient Client { get;  private set; }
     public string PlayerName { get;  private set; }
     
-    public void Init(TcpClient client, string playerName)
+    public void Init(TcpClient client, string playerName, Dispatcher dispatcher)
     {
+        _dispatcher = dispatcher;
         Client = client;
         PlayerName = playerName;
         streamWriter = new StreamWriter(client.GetStream());
+        
         SendMessage(new StartMessage()
         {
             PlayerName = playerName

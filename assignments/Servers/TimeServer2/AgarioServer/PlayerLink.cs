@@ -57,7 +57,9 @@ namespace AgarioServer
             {
                 streamWriter = new StreamWriter(PlayerClient.GetStream());
             }
-            var obj =JsonConvert.SerializeObject(message, Formatting.Indented);
+            var obj =JsonConvert.SerializeObject(message, Formatting.None);
+            Console.WriteLine(obj);
+            
             streamWriter.WriteLine(obj);
             streamWriter.Flush();
         }

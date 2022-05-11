@@ -23,37 +23,26 @@ namespace AgarioServer
         public void SendStartMessages()
         {
             var dict = new StartDictionaryMessage();
-            var dict2 = new PositionDictionaryMessage();
-            
+
             foreach (var s in _links)
             {
-                var mess = new StartMessage()
-                {
-                    PlayerCount = s.Key,
-                    PlayerName = s.Value.playerName
-                };
-                var mess1 = new PositionMessage()
+                var mess = new StartSetupMessage()
                 {
                     X = s.Value.position.X,
                     Y = s.Value.position.Y,
                     Z = s.Value.position.Z,
-                };
-                var mess2 = new ScoreMessage()
-                {
                     Score = s.Value.score
                 };
-                dict2.PositionMessages.Add(s.Key,mess1);
+                
                 dict.StartMessages.Add(s.Key, mess);
-                dict.PositionMessages.Add(s.Key, mess1);
-                dict.ScoreMessages.Add(s.Key, mess2);
             }
 
-            var obj =JsonConvert.SerializeObject(dict2, Formatting.None);
+            var obj =JsonConvert.SerializeObject(dict, Formatting.None);
             Console.WriteLine(obj);
 
             foreach (var l in _links)
             {
-                l.Value.SendMessageJsonConvert(obj);
+                l.Value.SendMessageJsonConvert(dict);
             }
         }
         
