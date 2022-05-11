@@ -18,6 +18,7 @@ public class NetworkHandler : MonoBehaviour
     private TMP_InputField nameField;
     private string playerName;
     public GameObject startScreen;
+    public GameObject spawnablePlayer;
 
 
     private void Awake()

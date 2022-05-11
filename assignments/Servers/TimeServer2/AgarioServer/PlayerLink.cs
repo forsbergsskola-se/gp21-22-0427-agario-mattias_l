@@ -15,6 +15,7 @@ namespace AgarioServer
         public readonly UpdateMessage _playerInfo;
         public  PositionMessage _positionInfo = new ();
         private readonly StreamWriter streamWriter;
+        private Game theParent;
         public event Action<float, float, float, PlayerCounter> UpdatePosition;
         
         private readonly JsonSerializerOptions options = new()
@@ -22,9 +23,10 @@ namespace AgarioServer
             IncludeFields = true
         };
         
-        public PlayerLink(TcpClient client)
+        public PlayerLink(TcpClient client, Game parentRef)
         {
             PlayerClient = client;
+            theParent = parentRef;
             
             new Thread(Begin).Start();
         }
@@ -66,7 +68,13 @@ namespace AgarioServer
             
             SendMessage(loginMessage);
         }
-        
+
+        private void ProcessPosMessage(string json)
+        {
+            _positionInfo =  JsonSerializer.Deserialize<PositionMessage>(json, options);
+            
+        }
+
         private void ReadMessage(string json)
         {
             switch (GetMessageType(json))
@@ -88,10 +96,7 @@ namespace AgarioServer
         private void Begin()
         {
             var streamReader = new StreamReader(PlayerClient.GetStream());
-            var options = new JsonSerializerOptions()
-            {
-                IncludeFields = true
-            };
+          
             while (true)
             {
                 var json = streamReader.ReadLine();

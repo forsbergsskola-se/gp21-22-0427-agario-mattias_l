@@ -15,7 +15,7 @@ namespace AgarioServer
         
         public void AddNewPlayer(TcpClient client, PlayerCounter playerCounter)
         {
-            _links.Add(playerCounter, new PlayerLink(client));
+            _links.Add(playerCounter, new PlayerLink(client, this));
         }
         
         public void SendGameInfo()

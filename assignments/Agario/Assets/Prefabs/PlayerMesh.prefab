@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2567030069038629165}
   - component: {fileID: 5541814015677322682}
+  - component: {fileID: 5719459504216064715}
+  - component: {fileID: 7874215183798678888}
   m_Layer: 0
   m_Name: PlayerMesh
   m_TagString: Untagged
@@ -44,6 +46,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 844f31aa18fb8aa4aa7245177bd8ecf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  start: {x: 0, y: 0, z: 0}
-  direction: {x: 0, y: 0, z: 0}
-  startMoving: 0
+--- !u!114 &5719459504216064715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1481641910000314633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 097870505939f1b42968112cfad63775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nextPosition: {x: 0, y: 0, z: 0}
+  moveSpeed: 0.1
+--- !u!114 &7874215183798678888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1481641910000314633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4aea8e6697e295e4a9ae431dd33aa0a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  worldPosition: {x: 0, y: 0, z: 0}
+  player: {fileID: 0}
+  moveSpeed: 0.1

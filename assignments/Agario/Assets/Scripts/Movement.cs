@@ -7,13 +7,11 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     public Vector3 nextPosition;
-   
-    public Transform player;
-    private bool move = false;
-    private float alpha;
+    private Vector3 _currentPos;
+    private bool _move;
+    private float _alpha;
     public float moveSpeed = 0.1f;
-    private Vector3 currentPos;
-    
+
     private void Awake()
     {
         PlayerLink.Instance.NewPositionGot += SetNewPosition;
@@ -27,26 +25,26 @@ public class Movement : MonoBehaviour
     private void SetNewPosition(Vector3 newPos, PlayerCounter playerNumber)
     {
         if (PlayerLink.Instance.playerNumber != playerNumber) return;
-        if (currentPos == newPos) return;
+        if (_currentPos == newPos) return;
         
-        currentPos = player.position;
+        _currentPos = transform.position;
         nextPosition = newPos;
-        alpha = 0;
-        move = true;
+        _alpha = 0;
+        _move = true;
     }
     
     void Update()
     {
-        if (!move) return;
+        if (!_move) return;
         
-        player.position =
-            Vector3.Lerp(currentPos, nextPosition, alpha);
-        alpha += moveSpeed * Time.deltaTime;
+        transform.position =
+            Vector3.Lerp(_currentPos, nextPosition, _alpha);
+        _alpha += moveSpeed * Time.deltaTime;
 
-        if (!(alpha > 0.99f)) return;
+        if (!(_alpha > 0.99f)) return;
         
-        move = false;
-        alpha = 0;
+        _move = false;
+        _alpha = 0;
     }
 
 }
