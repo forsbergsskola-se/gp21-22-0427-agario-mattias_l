@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
+using AgarioShared;
 using AgarioShared.AgarioShared.Enums;
 using AgarioShared.AgarioShared.Messages;
 using Newtonsoft.Json;
@@ -13,7 +14,9 @@ namespace AgarioServer
     public class Game
     {
         public Dictionary<PlayerCounter, PlayerLink> _links = new ();
-        
+        public PositionDictionaryMessage positionDictionary;
+        public ScoreDictionaryMessage scoreDictionary;
+
         public void AddNewPlayer(TcpClient client, PlayerCounter playerCounter)
         {
             _links.Add(playerCounter, new PlayerLink(client, this));
@@ -27,58 +30,76 @@ namespace AgarioServer
             {
                 var mess = new StartSetupMessage()
                 {
-                    X = s.Value.position.X,
-                    Y = s.Value.position.Y,
-                    Z = s.Value.position.Z,
-                    Score = s.Value.score
+                    X = s.Value.Position.X,
+                    Y = s.Value.Position.Y,
+                    Z = s.Value.Position.Z,
+                    Score = s.Value.Score
                 };
-                
                 dict.StartMessages.Add(s.Key, mess);
             }
+            
+            SendMessageToAll(dict, JsonType2.JsonConvert);
+        }
 
-            var obj =JsonConvert.SerializeObject(dict, Formatting.None);
-            Console.WriteLine(obj);
 
+        private void SendMessageToAll<T>(T message, JsonType2 type)
+        {
             foreach (var l in _links)
             {
-                l.Value.SendMessageJsonConvert(dict);
+                if(type == JsonType2.JsonConvert)
+                    l.Value.SendMessageJsonConvert(message);
+                else if(type == JsonType2.JsonSerializer)
+                    l.Value.SendMessage(message);
             }
         }
         
-        public void SendGameInfo()
-        {
-            
-            foreach (var VARIABLE in _links)
-            {
-                                
-            }
-            
-        }
-
         public void SendPositionInfo()
         {
-            var poses =_links
-                .Select(x => x.Value._positionInfo).ToList();
-            
-            foreach (var p in _links)
+            var dict = new PositionDictionaryMessage();
+
+            foreach (var s in _links)
             {
-                p.Value.SendMessage(poses);
+                var mess = new PositionMessage()
+                {
+                    X = s.Value.Position.X,
+                    Y = s.Value.Position.Y,
+                    Z = s.Value.Position.Z,
+                };
+                dict.PositionMessages.Add(s.Key, mess);
             }
+            
+            SendMessageToAll(dict, JsonType2.JsonConvert);
         }
 
-        public void SetPositionInfo(float x, float y, float z, PlayerCounter counter)
-        {
-            if (!_links.ContainsKey(counter)) return;
-
-            _links[counter]._positionInfo.X = x;
-            _links[counter]._positionInfo.X = y;
-            _links[counter]._positionInfo.X = z;
-        }
-        
-        
         public void SendScoreInfo()
         {
+            var dict = new ScoreDictionaryMessage();
+            SetRank();
+
+            foreach (var s in _links)
+            {
+                var mess = new ScoreMessage()
+                {
+                    Score = s.Value.Score,
+                    Rank = s.Value.Rank
+                };
+                dict.ScoreMessages.Add(s.Key, mess);
+            }
             
+            SendMessageToAll(dict, JsonType2.JsonConvert);    
+        }
+
+        private void SetRank()
+        {
+            var count = 0;
+            var order = _links.Values
+                .OrderByDescending(x => x.Score)
+                .Select(x =>
+                {
+                    x.Rank = count;
+                    count++;
+                    return x;
+                });
         }
         
         

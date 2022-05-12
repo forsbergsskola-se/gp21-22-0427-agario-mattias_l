@@ -15,7 +15,9 @@ namespace AgarioServer
         private static IPAddress localAddress = IPAddress.Parse("127.0.0.1");
         private static TcpListener server = null;
         private static Game theGame = null;
-        private static int maxPlayerCount = 6;
+        
+        private static int maxPlayerCount = 
+            Enum.GetValues(typeof(PlayerCounter)).Length;
         
         static void Main(string[] args)
         {

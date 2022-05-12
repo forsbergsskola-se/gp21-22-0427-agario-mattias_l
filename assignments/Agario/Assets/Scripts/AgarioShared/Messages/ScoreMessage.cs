@@ -5,5 +5,6 @@ namespace AgarioShared.AgarioShared.Messages
     {
         public int T = 'S';
         public int Score;
+        public int Rank;
     }
 }

@@ -16,17 +16,16 @@ namespace AgarioServer
     {
         private TcpClient PlayerClient { get; }
         public PlayerCounter PlayerNumber;
-        public Vector3 position;
-        public int score;
+        public string PlayerName;
+        public Vector3 Position;
+        public int Score;
+        public int Rank;
         
-        public readonly UpdateMessage _playerInfo;
-        public string playerName;
-        public  PositionMessage _positionInfo = new ();
-        private  StreamWriter streamWriter;
+        private  StreamWriter _streamWriter;
         private Game theParent;
         public event Action<float, float, float, PlayerCounter> UpdatePosition;
         
-        private readonly JsonSerializerOptions options = new()
+        private readonly JsonSerializerOptions _options = new()
         {
             IncludeFields = true,
 
@@ -42,26 +41,25 @@ namespace AgarioServer
 
         public void SendMessage<T>(T message)
         {
-            if (streamWriter == null)
+            if (_streamWriter == null)
             {
-                streamWriter = new StreamWriter(PlayerClient.GetStream());
+                _streamWriter = new StreamWriter(PlayerClient.GetStream());
             }
-            streamWriter.WriteLine(JsonSerializer.Serialize(message, options));
-            Console.WriteLine(JsonSerializer.Serialize(message, options));
-            streamWriter.Flush();
+            _streamWriter.WriteLine(JsonSerializer.Serialize(message, _options));
+            Console.WriteLine(JsonSerializer.Serialize(message, _options));
+            _streamWriter.Flush();
         }
 
         public void SendMessageJsonConvert<T>(T message)
         {
-            if (streamWriter == null)
+            if (_streamWriter == null)
             {
-                streamWriter = new StreamWriter(PlayerClient.GetStream());
+                _streamWriter = new StreamWriter(PlayerClient.GetStream());
             }
             var obj =JsonConvert.SerializeObject(message, Formatting.None);
-            Console.WriteLine(obj);
-            
-            streamWriter.WriteLine(obj);
-            streamWriter.Flush();
+
+            _streamWriter.WriteLine(obj);
+            _streamWriter.Flush();
         }
         
         private MessageTypes GetMessageType(string json)
@@ -83,13 +81,18 @@ namespace AgarioServer
             return MessageTypes.Error;
         }
 
+        public void SetPositionInfo(PositionMessage newPosition)
+        {
+            Position = new Vector3(newPosition.X, newPosition.Y, newPosition.Z);
+        }
+        
         private void ProcessStartMessage(string json)
         {
-            var loginMessage = JsonSerializer.Deserialize<StartMessage>(json, options);
+            var loginMessage = JsonSerializer.Deserialize<StartMessage>(json, _options);
             if (loginMessage == null) return;
 
             Console.WriteLine($"[#{PlayerNumber}] Player '{loginMessage.PlayerName}' logged in.");
-            playerName = loginMessage.PlayerName;
+            PlayerName = loginMessage.PlayerName;
             loginMessage.PlayerCount = PlayerNumber;
             SendMessage(loginMessage);
             theParent.SendStartMessages();
@@ -104,12 +107,16 @@ namespace AgarioServer
                     break;
                 
                 case MessageTypes.Position:
-                    _positionInfo =  JsonSerializer.Deserialize<PositionMessage>(json, options);
+                    var positionInfo =  JsonSerializer.Deserialize<PositionMessage>(json, _options);
+                    SetPositionInfo(positionInfo);
                     theParent.SendPositionInfo();
                     break;
                 
                 case MessageTypes.Score:
-                    var scoreMessage = JsonSerializer.Deserialize<ScoreMessage>(json, options);
+                    var scoreMessage = JsonSerializer.Deserialize<ScoreMessage>(json, _options);
+                    if(scoreMessage != null)
+                        Score = scoreMessage.Score;
+                    theParent.SendScoreInfo();
                     break;
             }
         }
