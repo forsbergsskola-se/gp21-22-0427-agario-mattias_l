@@ -12,7 +12,6 @@ namespace AgarioServer
 {
     public class Game
     {
-        private GameInfo _gameInfo = new GameInfo();
         public Dictionary<PlayerCounter, PlayerLink> _links = new ();
         
         public void AddNewPlayer(TcpClient client, PlayerCounter playerCounter)
@@ -89,12 +88,7 @@ namespace AgarioServer
             {
                 if (_links.ContainsKey(PlayerCounter.Player1))
                 {
-                    _gameInfo.started = true;
-                    if (_gameInfo.players.All(x => x.Value.IsActive))
-                    {
-                    //    Console.WriteLine("Game has started");
-                    //    SendGameInfo();
-                    }
+                    
                 }
             }
         }

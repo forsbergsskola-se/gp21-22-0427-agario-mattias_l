@@ -1,12 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 using UnityEngine;
+using Vector3 = UnityEngine.Vector3;
 
 public class PlayerMesh : MonoBehaviour
 {
     Mesh playerMesh;
     MeshCollider meshCollider;
+    public Material theMaterial;
     [NonSerialized] List<Vector3> vertices = new(); 
     [NonSerialized] private List<int> triangles= new();
     [NonSerialized] private List<Color> _colors= new();
@@ -23,20 +26,21 @@ public class PlayerMesh : MonoBehaviour
     {
         GetComponent<MeshFilter>().mesh = playerMesh = new Mesh();
         meshCollider = new MeshCollider();
-        BuildAMesh();
+        BuildAMesh(12);
     }
 
-    private void BuildAMesh()
+    private void BuildAMesh(int numTris)
     {
-        Vector3 center = transform.position;
-        Vector3 extent1 = center + new Vector3(-1,0,0);
-        Vector3 extent2 = center + new Vector3(0,0,1);
+        var center = Vector3.zero;
+        var degreeInc = 360 / numTris;
+        var degrees = 0f;
         
-        AddTriangle(extent2,center, extent1);
-        
-        for (int i = 0; i < 7; i++)
+        for (var i = 0; i < numTris; i++)
         {
-            
+            Vector3 extent2 = GetCircleEdge(degrees, center, 1);
+            Vector3 extent1 = GetCircleEdge(degrees + degreeInc, center, 1);
+            AddTriangle(extent2,center, extent1);
+            degrees += degreeInc;
         }
     }
 
@@ -44,8 +48,7 @@ public class PlayerMesh : MonoBehaviour
     {
         var cos = Math.Cos(Mathf.PI / 180f * degree) * extent;
         var sin = Math.Sin(Mathf.PI / 180f * degree) * extent;
-     
-
+        
         return center + new Vector3((float)cos, 0, (float) sin);
     }
     
