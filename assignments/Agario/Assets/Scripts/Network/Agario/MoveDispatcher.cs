@@ -1,9 +1,11 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using System;
+using AgarioShared.AgarioShared.Enums;
 using UnityEngine;
- 
-public class Dispatcher : MonoBehaviour
+
+public class MoveDispatcher : MonoBehaviour
 {
     public static void RunAsync(Action action) 
     {
@@ -15,7 +17,7 @@ public class Dispatcher : MonoBehaviour
         ThreadPool.QueueUserWorkItem(o => action(o), state);
     }
  
-    public static void RunOnMainThread(Action action)
+    public static void RunOnMainThread(Action<Vector3, PlayerCounter> action)
     {
         lock(_backlog) 
         {
@@ -45,7 +47,7 @@ public class Dispatcher : MonoBehaviour
             }
  
             foreach(var action in _actions)
-                action();
+              //  action();
  
             _actions.Clear();
         }
@@ -53,6 +55,6 @@ public class Dispatcher : MonoBehaviour
  
     static Dispatcher _instance;
     static volatile bool _queued = false;
-    static List<Action> _backlog = new (8);
-    static List<Action> _actions = new (8);
+    static List<Action<Vector3, PlayerCounter>> _backlog = new (16);
+    static List<Action<Vector3, PlayerCounter>> _actions = new (16);
 }

@@ -56,8 +56,8 @@ public class NetworkHandler : MonoBehaviour
             {
                 var spawnPos = new Vector3(p.Value.X, p.Value.Y, p.Value.Z);
                 
-                Dispatcher.RunOnMainThread(MultiStart);
                 var spawn = Instantiate(spawnablePlayer, spawnPos, Quaternion.identity);
+                spawn.GetComponent<Movement>().PlayerCounter = p.Key;
                 spawnedActors.Add(p.Key, spawn);
             }
         }

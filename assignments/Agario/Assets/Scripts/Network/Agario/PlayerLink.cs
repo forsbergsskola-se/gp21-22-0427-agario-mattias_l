@@ -17,15 +17,16 @@ public class PlayerLink
     private Vector3 _newLocation;
     private int _score;
     private int _rank;
-    
+
     public PlayerCounter playerNumber;
+    public string PlayerName { get;  private set; }
     public event Action<Vector3, PlayerCounter> NewPositionGot;
     public event Action<int, PlayerCounter> ScoreUpdated;
     public event Action<StartDictionaryMessage> StartMultiAction;
     public event Action<StartMessage> StartSingleAction;
     private Dispatcher _dispatcher;
     public TcpClient Client { get;  private set; }
-    public string PlayerName { get;  private set; }
+
     
     public void Init(TcpClient client, string playerName, Dispatcher dispatcher)
     {
@@ -48,8 +49,15 @@ public class PlayerLink
 
     public void UpdateLocation(Vector3 newLocation)
     {
+        var mess = new PositionMessage()
+        {
+            X = newLocation.x,
+            Y = newLocation.y,
+            Z = newLocation.z
+        };
+        
         _newLocation = newLocation;
-        SendMessage(newLocation);
+        SendMessage(mess);
     }
     
     public void IncreaseScore(int score, bool sendToServer)
@@ -94,11 +102,9 @@ public class PlayerLink
 
     private void ProcessMessage(string json)
     {
-        Debug.Log(json);
         switch (GetMessageType(json))
         {
             case MessageTypes.StartDictionary:
-                var dict = JsonUtility.FromJson<StartDictionaryMessage>(json);
                 var dict3 = JsonConvert.DeserializeObject<StartDictionaryMessage>(json);
                 StartMultiAction?.Invoke(dict3);
                 break;
@@ -107,9 +113,28 @@ public class PlayerLink
                 playerNumber = dict1.PlayerCount;
                 Debug.Log($"Player{dict1.PlayerCount} With name {dict1.PlayerName} logged in");
                 break;
+            case MessageTypes.PositionDictionary:
+                SetMultiPos(json);
+                break;
         }
     }
 
+    private void SetMultiPos(string json)
+    {
+        Debug.Log($"move action got: {json}");
+        
+        var dict1 = JsonConvert.DeserializeObject<PositionDictionaryMessage>(json);
+        Debug.Log(dict1.PositionMessages[PlayerCounter.Player1].X);
+
+        foreach (var p in dict1.PositionMessages)
+        {
+            var pos = new Vector3(p.Value.X, p.Value.Y, p.Value.Z);
+            
+            NewPositionGot?.Invoke(pos, p.Key);
+        }
+    }
+    
+    
     private void Begin()
     {
         var streamReader = new StreamReader(Client.GetStream());

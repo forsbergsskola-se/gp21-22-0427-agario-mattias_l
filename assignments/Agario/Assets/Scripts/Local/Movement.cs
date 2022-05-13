@@ -10,7 +10,8 @@ public class Movement : MonoBehaviour
     private Vector3 _currentPos;
     private bool _move;
     private float _alpha;
-    public float moveSpeed = 0.1f;
+    public float moveSpeed = 0.4f;
+    public PlayerCounter PlayerCounter;
 
     private void Awake()
     {
@@ -24,11 +25,19 @@ public class Movement : MonoBehaviour
 
     private void SetNewPosition(Vector3 newPos, PlayerCounter playerNumber)
     {
-        if (PlayerLink.Instance.playerNumber != playerNumber) return;
-        if (_currentPos == newPos) return;
+        if (this.PlayerCounter != playerNumber) return;
         
-        _currentPos = transform.position;
+        Debug.Log($"Player {(int)playerNumber} is moving");
+        if (_currentPos == newPos) return;
+
         nextPosition = newPos;
+        
+        Dispatcher.RunOnMainThread(SetNewPosition);
+    }
+
+    private void SetNewPosition()
+    {
+        _currentPos = transform.position;
         _alpha = 0;
         _move = true;
     }
