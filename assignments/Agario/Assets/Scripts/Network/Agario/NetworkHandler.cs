@@ -23,6 +23,8 @@ public class NetworkHandler : MonoBehaviour
     public GameObject startScreen;
     public GameObject spawnablePlayer;
     public Dictionary<PlayerCounter, GameObject> spawnedActors = new();
+    private StartDictionaryMessage startDictionary;
+    private PlayerSelectPosition _selectPosition;
 
 
     private void Awake()
@@ -40,24 +42,25 @@ public class NetworkHandler : MonoBehaviour
     
     private void OnstartMulti(StartDictionaryMessage dict)
     {
+        startDictionary = dict;
+        Dispatcher.RunOnMainThread(MultiStart);
+    }
+
+    private void MultiStart()
+    {
         Debug.Log("Spawning players");
-        Debug.Log(dict.StartMessages.Count);
-        foreach (var p in dict.StartMessages)
+        Debug.Log(startDictionary.StartMessages.Count);
+        foreach (var p in startDictionary.StartMessages)
         {
             if (!spawnedActors.ContainsKey(p.Key))
             {
-              //  Debug.Log($"Spawning player{dict.StartMessages[p.Key].PlayerName}");
-                var pos = new Vector3(p.Value.X, p.Value.Y, p.Value.Z);
-                Dispatcher.RunOnMainThread(SimpleSpawn);
-              //  var spawn = Instantiate(spawnablePlayer, pos, Quaternion.identity);
-             //   spawnedActors.Add(p.Key, spawn);
+                var spawnPos = new Vector3(p.Value.X, p.Value.Y, p.Value.Z);
+                
+                Dispatcher.RunOnMainThread(MultiStart);
+                var spawn = Instantiate(spawnablePlayer, spawnPos, Quaternion.identity);
+                spawnedActors.Add(p.Key, spawn);
             }
         }
-    }
-
-    private void SimpleSpawn()
-    {
-        var spawn = Instantiate(spawnablePlayer, new Vector3(0,0,0), Quaternion.identity);
     }
     
     private void SetPlayerName(string theName)
@@ -82,6 +85,15 @@ public class NetworkHandler : MonoBehaviour
         _client = new TcpClient("127.0.0.1", port);
   
         PlayerLink.Instance.Init(_client, playerName, transform.GetComponent<Dispatcher>());
+        
+        var mess = new StartMessage()
+        {
+            PlayerName = playerName
+        };
+        _selectPosition = gameObject.AddComponent<PlayerSelectPosition>();
+        
+        
+        PlayerLink.Instance.SendMessage(mess);
     }
 
 }

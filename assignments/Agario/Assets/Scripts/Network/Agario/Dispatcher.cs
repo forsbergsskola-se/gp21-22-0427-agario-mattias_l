@@ -55,6 +55,6 @@ public class Dispatcher : MonoBehaviour
  
     static Dispatcher _instance;
     static volatile bool _queued = false;
-    static List<Action> _backlog = new List<Action>(8);
-    static List<Action> _actions = new List<Action>(8);
+    static List<Action> _backlog = new (8);
+    static List<Action> _actions = new (8);
 }

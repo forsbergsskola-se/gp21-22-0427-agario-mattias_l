@@ -34,10 +34,6 @@ public class PlayerLink
         PlayerName = playerName;
         streamWriter = new StreamWriter(client.GetStream());
         
-        SendMessage(new StartMessage()
-        {
-            PlayerName = playerName
-        });
         new Thread(Begin).Start();
     }
     
