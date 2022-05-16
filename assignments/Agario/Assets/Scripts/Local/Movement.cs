@@ -12,6 +12,7 @@ public class Movement : MonoBehaviour
     private float _alpha;
     public float moveSpeed = 0.4f;
     public PlayerCounter PlayerCounter;
+    public float elevation = 0.1f;
 
     private void Awake()
     {
@@ -30,7 +31,7 @@ public class Movement : MonoBehaviour
         Debug.Log($"Player {(int)playerNumber} is moving");
         if (_currentPos == newPos) return;
 
-        nextPosition = newPos;
+        nextPosition = newPos + new Vector3(0,elevation, 0);
         
         Dispatcher.RunOnMainThread(SetNewPosition);
     }

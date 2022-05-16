@@ -23,6 +23,8 @@ public class PlayerLink
     public string PlayerName { get;  private set; }
     public event Action<Vector3, PlayerCounter> NewPositionGot;
     public event Action<int, PlayerCounter> ScoreUpdated;
+    
+    public event Action<int, PlayerCounter> SizeUpdated;
     public event Action<List<string>> UpdateTheRankings; 
 
     public event Action<StartDictionaryMessage> StartMultiAction;
@@ -155,6 +157,11 @@ public class PlayerLink
     {
         ScoreUpdated?.Invoke(_score, playerNumber);
         UpdateTheRankings?.Invoke(currentRankings);
+
+        if (_score % 5 == 0)
+        {
+            SizeUpdated?.Invoke(_score, playerNumber);
+        }
     }
     
     private void SetMultiPos(string json)

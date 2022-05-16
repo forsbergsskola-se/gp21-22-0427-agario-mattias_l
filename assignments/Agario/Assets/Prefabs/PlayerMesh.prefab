@@ -47,7 +47,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 844f31aa18fb8aa4aa7245177bd8ecf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  theMaterial: {fileID: 0}
+  PlayerCounter: 0
+  theMaterial: {fileID: 2100000, guid: ac901e8a8153ea94fbd9c72e900365e5, type: 2}
 --- !u!114 &5719459504216064715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62,6 +63,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nextPosition: {x: 0, y: 0, z: 0}
   moveSpeed: 0.1
+  PlayerCounter: 0
+  elevation: 0.1
 --- !u!33 &8623669330784244058
 MeshFilter:
   m_ObjectHideFlags: 0

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
+using AgarioShared.AgarioShared.Enums;
 using UnityEngine;
 using Vector3 = UnityEngine.Vector3;
 
@@ -9,6 +10,7 @@ public class PlayerMesh : MonoBehaviour
 {
     Mesh playerMesh;
     MeshCollider meshCollider;
+    public PlayerCounter PlayerCounter;
     private Rigidbody _rigidbody;
     private SphereCollider Collider;
     public Material theMaterial;
@@ -23,6 +25,7 @@ public class PlayerMesh : MonoBehaviour
     {
         _rigidbody = gameObject.AddComponent<Rigidbody>();
         _rigidbody.useGravity = false;
+        _rigidbody.freezeRotation = true;
         Collider = gameObject.AddComponent<SphereCollider>();
         Collider.radius = 1f;
 
@@ -33,10 +36,12 @@ public class PlayerMesh : MonoBehaviour
         GetComponent<MeshFilter>().mesh = playerMesh = new Mesh();
        // meshCollider = new MeshCollider();
         BuildAMesh(12, 1f);
+        SetMaterial(theMaterial);
     }
 
     private void BuildAMesh(int numTris, float startExtent)
     {
+        PlayerLink.Instance.SizeUpdated += IncreaseSize;
         var center = Vector3.zero;
         var degreeInc = 360 / numTris;
         var degrees = 0f;
@@ -50,6 +55,17 @@ public class PlayerMesh : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+        PlayerLink.Instance.SizeUpdated -= IncreaseSize;
+    }
+
+    public void IncreaseSize(int score, PlayerCounter playerCounter)
+    {
+        if (PlayerCounter != playerCounter) return;
+        gameObject.transform.localScale += new Vector3(0.1f, 0, 0.1f);
+    }
+    
     public Vector3 GetCircleEdge(float degree, Vector3 center, float extent)
     {
         var cos = Math.Cos(Mathf.PI / 180f * degree) * extent;

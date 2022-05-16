@@ -59,16 +59,12 @@ public class NetworkHandler : MonoBehaviour
                 
                 var spawn = Instantiate(spawnablePlayer, spawnPos, Quaternion.identity);
                 spawn.GetComponent<Movement>().PlayerCounter = p.Key;
+                spawn.GetComponent<PlayerMesh>().PlayerCounter = p.Key;
                 spawnedActors.Add(p.Key, spawn);
             }
         }
     }
 
-    public void UpdateScore(ScoreDictionaryMessage message)
-    {
-        
-    }
-    
     private void SetPlayerName(string theName)
     {
         playerName = theName;
