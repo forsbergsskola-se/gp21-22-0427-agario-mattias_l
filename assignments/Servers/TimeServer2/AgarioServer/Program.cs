@@ -15,6 +15,7 @@ namespace AgarioServer
         private static IPAddress localAddress = IPAddress.Parse("127.0.0.1");
         private static TcpListener server = null;
         private static Game theGame = null;
+        private static int playerCount;
         
         private static int maxPlayerCount = 
             Enum.GetValues(typeof(PlayerCounter)).Length;
@@ -23,7 +24,7 @@ namespace AgarioServer
         {
             server = new TcpListener(localAddress, port);
             server.Start();
-
+            int count = 0;
             while (true)
             {
                 Console.WriteLine("Waiting for connection");
@@ -34,18 +35,21 @@ namespace AgarioServer
                 {
                     Console.WriteLine("Starting new game");
                     theGame = new Game();
-                    theGame.AddNewPlayer(client, (PlayerCounter) theGame._links.Count);
+                    theGame.AddNewPlayer(client, (PlayerCounter) count);
                     new Thread(theGame.Start).Start();
+                    count++;
                 }
-                else if( theGame._links.Count < maxPlayerCount)
+                else if( theGame.theLinks.Count < maxPlayerCount)
                 {
                     Console.WriteLine("Assigning Player to existing game.");
-                    theGame.AddNewPlayer(client, (PlayerCounter) theGame._links.Count);
+                    theGame.AddNewPlayer(client, (PlayerCounter) count);
+                    count++;
                 }
                 else
                 {
                     Console.WriteLine("Maximum player count reached");
                 }
+                Console.WriteLine(count);
             }
         }
 

@@ -32,10 +32,11 @@ namespace AgarioServer
 
         };
         
-        public PlayerLink(TcpClient client, Game parentRef)
+        public PlayerLink(TcpClient client, Game parentRef, PlayerCounter counter)
         {
             PlayerClient = client;
             theParent = parentRef;
+            PlayerNumber = counter;
             
             new Thread(Begin).Start();
         }

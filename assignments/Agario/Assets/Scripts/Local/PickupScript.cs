@@ -8,7 +8,9 @@ public class PickupScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        PlayerLink.Instance.IncreaseScore(1, true);
+        var count = other.GetComponent<PlayerMesh>().PlayerCounter;
+        
+        PlayerLink.Instance.IncreaseScore(count,1, true);
         Destroy(gameObject);
     }
 

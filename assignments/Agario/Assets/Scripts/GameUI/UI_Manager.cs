@@ -15,6 +15,7 @@ using UnityEngine;
 public class UI_Manager : MonoBehaviour
 {
     private TextMeshProUGUI scoreBoard;
+    private PlayerCounter playerNumber;
 
     private int score;
     private int rank;
@@ -22,19 +23,26 @@ public class UI_Manager : MonoBehaviour
  
     void Start()
     {
-        
         scoreBoard = GetComponentInChildren<TextMeshProUGUI>();
         scoreBoard.text = "Current score: 0";
         PlayerLink.Instance.ScoreUpdated += NewScore;
         PlayerLink.Instance.UpdateTheRankings += UpdateRankings;
+        PlayerLink.Instance.SetplayerCounter += SetPlayerCounter;
     }
     
     private void OnDisable()
     {
         PlayerLink.Instance.ScoreUpdated -= NewScore;
         PlayerLink.Instance.UpdateTheRankings -= UpdateRankings;
+        PlayerLink.Instance.SetplayerCounter -= SetPlayerCounter;
     }
 
+    private void SetPlayerCounter(string playerName, PlayerCounter counter)
+    {
+        if (playerName != PlayerLink.Instance.PlayerName) return;
+        playerNumber = counter;
+    }
+    
     private void UpdateRankings(List<string> names)
     {
         int counter = 1;
@@ -48,9 +56,9 @@ public class UI_Manager : MonoBehaviour
         }
     }
     
-    private void NewScore(int theScore, PlayerCounter playerNumber)
+    private void NewScore(int theScore, PlayerCounter number)
     {
-        if (PlayerLink.Instance.playerNumber != playerNumber) return;
+        if (playerNumber != number) return;
         
         scoreBoard.text = $"Current score: {theScore}";
     }

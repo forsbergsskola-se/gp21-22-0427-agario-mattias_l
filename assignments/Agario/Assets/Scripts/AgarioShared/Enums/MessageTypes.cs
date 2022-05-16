@@ -9,6 +9,7 @@ namespace AgarioShared.AgarioShared.Enums
         ScoreDictionary,
         Start,
         StartDictionary,
+        SpawnPickups,
         Error
     }
 }

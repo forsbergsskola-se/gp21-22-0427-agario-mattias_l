@@ -17,16 +17,24 @@ public class Movement : MonoBehaviour
     private void Awake()
     {
         PlayerLink.Instance.NewPositionGot += SetNewPosition;
+        PlayerLink.Instance.SetplayerCounter += SetPlayerCounter;
     }
 
     private void OnDisable()
     {
         PlayerLink.Instance.NewPositionGot -= SetNewPosition;
+        PlayerLink.Instance.SetplayerCounter -= SetPlayerCounter;
+    }
+
+    private void SetPlayerCounter(string playerName, PlayerCounter playerCounter)
+    {
+        if (PlayerLink.Instance.PlayerName != playerName) return;
+        PlayerCounter = playerCounter;
     }
 
     private void SetNewPosition(Vector3 newPos, PlayerCounter playerNumber)
     {
-        if (this.PlayerCounter != playerNumber) return;
+        if (PlayerCounter != playerNumber) return;
         
         Debug.Log($"Player {(int)playerNumber} is moving");
         if (_currentPos == newPos) return;

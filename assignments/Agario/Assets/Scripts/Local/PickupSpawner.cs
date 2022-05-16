@@ -1,49 +1,46 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class PickupSpawner : MonoBehaviour
 {
     public List<GameObject> pickups;
-    public float SpawnInterval = 2f;
+    public float SpawnInterval = 6f;
     public float timer;
     public int spawnAmount = 8;
     private int totalSpawned;
     public int maxSpawn = 100;
-    
-    
+    public List<Vector3> spawnPoses = new();
+    public static event Action RequestMoreSpawns; 
+
     void Start()
     {
-        
+        PlayerLink.Instance.OnSpawnPickups += BeginSpawning;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDisable()
     {
-        timer += Time.deltaTime;
-
-        if (timer >= SpawnInterval)
-        {
-            timer = 0;
-            SpawnPickups();
-        }
-            
-        
+        PlayerLink.Instance.OnSpawnPickups -= BeginSpawning;
+    }
+    
+    
+    private void BeginSpawning(List<Vector3> positions)
+    {
+        spawnPoses = positions;
+        Dispatcher.RunOnMainThread(SpawnPickups);
     }
 
     private void SpawnPickups()
     {
         if (totalSpawned >= maxSpawn) return;
         
-        for (int i = 0; i < spawnAmount; i++)
+        foreach (var p in spawnPoses)
         {
-            var x = Random.Range(-50f, 50f);
-            var z = Random.Range(-50f, 50f);
-            Vector3 spawnPos = new Vector3(x, 0.05f, z);
-            
             var pickType = Random.Range(0, 2);
             
-            var temp =Instantiate(pickups[pickType], spawnPos,Quaternion.identity);
+            var temp =Instantiate(pickups[pickType], p,Quaternion.identity);
             temp.transform.Rotate(Vector3.right, 90);
             totalSpawned++;
         }

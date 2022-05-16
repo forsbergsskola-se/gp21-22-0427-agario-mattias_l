@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
 using AgarioShared.AgarioShared.Enums;
+using TMPro;
 using UnityEngine;
 using Vector3 = UnityEngine.Vector3;
 
@@ -11,7 +12,8 @@ public class PlayerMesh : MonoBehaviour
     Mesh playerMesh;
     MeshCollider meshCollider;
     public PlayerCounter PlayerCounter;
-    private Rigidbody _rigidbody;
+    public string playerName;
+    private TextMeshProUGUI nameText;
     private SphereCollider Collider;
     public Material theMaterial;
     [NonSerialized] List<Vector3> vertices = new(); 
@@ -23,9 +25,8 @@ public class PlayerMesh : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _rigidbody = gameObject.AddComponent<Rigidbody>();
-        _rigidbody.useGravity = false;
-        _rigidbody.freezeRotation = true;
+        nameText = gameObject.AddComponent<TextMeshProUGUI>();
+        
         Collider = gameObject.AddComponent<SphereCollider>();
         Collider.radius = 1f;
 
@@ -64,6 +65,7 @@ public class PlayerMesh : MonoBehaviour
     {
         if (PlayerCounter != playerCounter) return;
         gameObject.transform.localScale += new Vector3(0.1f, 0, 0.1f);
+        Collider.radius += 0.1f;
     }
     
     public Vector3 GetCircleEdge(float degree, Vector3 center, float extent)

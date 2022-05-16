@@ -8,6 +8,7 @@ using System.Threading;
 using AgarioShared;
 using AgarioShared.AgarioShared.Enums;
 using AgarioShared.AgarioShared.Messages;
+using AgarioShared.Assets.Scripts.AgarioShared.Messages;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -25,9 +26,12 @@ public class PlayerLink
     public event Action<int, PlayerCounter> ScoreUpdated;
     
     public event Action<int, PlayerCounter> SizeUpdated;
-    public event Action<List<string>> UpdateTheRankings; 
+    public event Action<List<string>> UpdateTheRankings;
+    public event Action<string,PlayerCounter> SetplayerCounter;
 
     public event Action<StartDictionaryMessage> StartMultiAction;
+
+    public event Action<List<Vector3>> OnSpawnPickups; 
 
     public List<string> currentRankings = new();
     public event Action<StartMessage> StartSingleAction;
@@ -67,7 +71,7 @@ public class PlayerLink
         SendMessage(mess);
     }
     
-    public void IncreaseScore(int score, bool sendToServer)
+    public void IncreaseScore(PlayerCounter counter, int score, bool sendToServer)
     {
         _score += score;
         if (!sendToServer) return;
@@ -87,11 +91,7 @@ public class PlayerLink
         streamWriter.WriteLine(JsonUtility.ToJson(message));
         streamWriter.Flush();
     }
-
-    public void UpdateRankings()
-    {
-        
-    }
+    
     
     private MessageTypes GetMessageType(string json)
     {
@@ -108,6 +108,9 @@ public class PlayerLink
                 return MessageTypes.ScoreDictionary;
             case "87":
                 return MessageTypes.Start;
+            case "98":
+                return MessageTypes.SpawnPickups;
+                
         }
        
         return MessageTypes.Error;
@@ -122,9 +125,7 @@ public class PlayerLink
                 StartMultiAction?.Invoke(dict3);
                 break;
             case MessageTypes.Start:
-                var dict1 = JsonUtility.FromJson<StartMessage>(json);
-                playerNumber = dict1.PlayerCount;
-                Debug.Log($"Player{dict1.PlayerCount} With name {dict1.PlayerName} logged in");
+                TheStart(json);
                 break;
             case MessageTypes.PositionDictionary:
                 SetMultiPos(json);
@@ -132,9 +133,34 @@ public class PlayerLink
             case MessageTypes.ScoreDictionary:
                 SetScore(json);
                 break;
+            case MessageTypes.SpawnPickups:
+                SpawnPickups(json);
+                break;
+                
         }
     }
 
+    private void TheStart(string json)
+    {
+        var dict1 = JsonUtility.FromJson<StartMessage>(json);
+        playerNumber = dict1.PlayerCount;
+        Debug.Log($"Player{dict1.PlayerCount} With name {dict1.PlayerName} logged in");
+        SetplayerCounter?.Invoke(PlayerName, playerNumber);
+    }
+    
+    private void SpawnPickups(string json)
+    {
+        var dict4 = JsonConvert.DeserializeObject<SpawnPickups>(json);
+        var list = new List<Vector3>();
+
+        foreach (var p in dict4.positions)
+        {
+            list.Add(new Vector3(p.X, 0.1f, p.Z));
+        }
+        
+        OnSpawnPickups?.Invoke(list);
+    }
+    
     private void SetScore(string json)
     {
         var dict4 = JsonConvert.DeserializeObject<ScoreDictionaryMessage>(json);
@@ -183,7 +209,7 @@ public class PlayerLink
     private void Begin()
     {
         var streamReader = new StreamReader(Client.GetStream());
-        
+
         while (true)
         {
             var json = streamReader.ReadLine();

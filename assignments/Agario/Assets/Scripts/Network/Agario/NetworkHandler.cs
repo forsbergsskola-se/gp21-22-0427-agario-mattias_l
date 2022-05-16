@@ -50,7 +50,6 @@ public class NetworkHandler : MonoBehaviour
     private void MultiStart()
     {
         Debug.Log("Spawning players");
-        Debug.Log(startDictionary.StartMessages.Count);
         foreach (var p in startDictionary.StartMessages)
         {
             if (!spawnedActors.ContainsKey(p.Key))
@@ -60,6 +59,7 @@ public class NetworkHandler : MonoBehaviour
                 var spawn = Instantiate(spawnablePlayer, spawnPos, Quaternion.identity);
                 spawn.GetComponent<Movement>().PlayerCounter = p.Key;
                 spawn.GetComponent<PlayerMesh>().PlayerCounter = p.Key;
+                spawn.GetComponent<PlayerMesh>().playerName = p.Value.Name;
                 spawnedActors.Add(p.Key, spawn);
             }
         }
