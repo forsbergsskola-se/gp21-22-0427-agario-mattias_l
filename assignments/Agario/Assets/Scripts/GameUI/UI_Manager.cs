@@ -30,14 +30,14 @@ public class UI_Manager : MonoBehaviour
         scoreBoard.text = "Current score: 0";
         PlayerLink.Instance.ScoreUpdated += NewScore;
         PlayerLink.Instance.UpdateTheRankings += UpdateRankings;
-        PlayerLink.Instance.SetplayerCounter += SetPlayerCounter;
+        PlayerLink.Instance.SetPlayerCounter += SetPlayerCounter;
     }
     
     private void OnDisable()
     {
         PlayerLink.Instance.ScoreUpdated -= NewScore;
         PlayerLink.Instance.UpdateTheRankings -= UpdateRankings;
-        PlayerLink.Instance.SetplayerCounter -= SetPlayerCounter;
+        PlayerLink.Instance.SetPlayerCounter -= SetPlayerCounter;
     }
 
     private void SetPlayerCounter(string playerName, PlayerCounter counter)

@@ -21,6 +21,7 @@ namespace AgarioServer
         public Vector3 Position;
         public int Score;
         public int Rank;
+        public float Size;
         public float size = 1f;
         
         private  StreamWriter _streamWriter;
@@ -119,12 +120,16 @@ namespace AgarioServer
                 
                 case MessageTypes.Score:
                     var scoreMessage = JsonSerializer.Deserialize<ScoreMessage>(json, _options);
-                    if(scoreMessage != null)
-                        Score = scoreMessage.Score;
+                    if (scoreMessage == null) return;
+                    Score = scoreMessage.Score;
                     theParent.SendScoreInfo();
                     break;
+                
                 case MessageTypes.Size:
                     var sizeMessage = JsonSerializer.Deserialize<SizeMessage>(json, _options);
+                    if (sizeMessage == null) return;
+                    Size = sizeMessage.size;
+                    theParent.SendSizeInfo();
                     break;
             }
         }

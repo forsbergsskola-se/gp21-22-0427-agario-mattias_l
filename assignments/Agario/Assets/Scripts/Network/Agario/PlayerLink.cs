@@ -16,32 +16,26 @@ public class PlayerLink
 {
     private static PlayerLink _link;
     private StreamWriter streamWriter;
-    private Vector3 _newLocation;
+  //  private Vector3 _newLocation;
     private int _score;
     private int _rank;
-
-    public PlayerCounter playerNumber;
     public string PlayerName { get;  private set; }
+    public PlayerCounter playerNumber;
     public event Action<Vector3, PlayerCounter> NewPositionGot;
     public event Action<int, PlayerCounter> ScoreUpdated;
-    
     public event Action<int, PlayerCounter> SizeUpdated;
     public event Action<List<string>> UpdateTheRankings;
-    public event Action<string,PlayerCounter> SetplayerCounter;
-
+    public event Action<string,PlayerCounter> SetPlayerCounter;
     public event Action<StartDictionaryMessage> StartMultiAction;
-
     public event Action<List<Vector3>> OnSpawnPickups; 
 
     public List<string> currentRankings = new();
     public event Action<StartMessage> StartSingleAction;
-    private Dispatcher _dispatcher;
     public TcpClient Client { get;  private set; }
 
     
     public void Init(TcpClient client, string playerName, Dispatcher dispatcher)
     {
-        _dispatcher = dispatcher;
         Client = client;
         PlayerName = playerName;
         streamWriter = new StreamWriter(client.GetStream());
@@ -67,16 +61,14 @@ public class PlayerLink
             Z = newLocation.z
         };
         
-        _newLocation = newLocation;
         SendMessage(mess);
     }
     
-    public void IncreaseScore(PlayerCounter counter, int score, bool sendToServer)
+    public void IncreaseScore(PlayerCounter counter, int score)
     {
         if (counter != playerNumber) return;
         
         _score += score;
-        if (!sendToServer) return;
 
         ScoreMessage theScore = new ScoreMessage()
         {
@@ -114,7 +106,6 @@ public class PlayerLink
                 return MessageTypes.SpawnPickups;
             case "10":
                 return MessageTypes.SizeDictionary;
-                
         }
        
         return MessageTypes.Error;
@@ -140,16 +131,24 @@ public class PlayerLink
             case MessageTypes.SpawnPickups:
                 SpawnPickups(json);
                 break;
-                
+            case MessageTypes.SizeDictionary:
+                SetSizes(json);
+                break;
         }
     }
 
+    private void SetSizes(string json)
+    {
+        var dict1 = JsonUtility.FromJson<SizeDictionary>(json);
+        
+    }
+    
     private void TheStart(string json)
     {
         var dict1 = JsonUtility.FromJson<StartMessage>(json);
         playerNumber = dict1.PlayerCount;
         Debug.Log($"Player{dict1.PlayerCount} With name {dict1.PlayerName} logged in");
-        SetplayerCounter?.Invoke(PlayerName, playerNumber);
+        SetPlayerCounter?.Invoke(PlayerName, playerNumber);
     }
     
     private void SpawnPickups(string json)
@@ -180,7 +179,6 @@ public class PlayerLink
                 Dispatcher.RunOnMainThread(SetScoreMain);
             }
         }
-        
     }
 
     private void SetScoreMain()
@@ -197,10 +195,7 @@ public class PlayerLink
     
     private void SetMultiPos(string json)
     {
-        Debug.Log($"move action got: {json}");
-        
         var dict1 = JsonConvert.DeserializeObject<PositionDictionaryMessage>(json);
-        Debug.Log(dict1.PositionMessages[PlayerCounter.Player1].X);
 
         foreach (var p in dict1.PositionMessages)
         {

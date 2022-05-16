@@ -20,6 +20,7 @@ namespace AgarioServer
         private int countToSpawn;
         private int TotalPickupsSpawned;
         private List<PositionMessage> randomPoses = new();
+        private List<PlayerLink> playerRanks;
 
 
         public void AddNewPlayer(TcpClient client, PlayerCounter playerCounter)
@@ -71,7 +72,7 @@ namespace AgarioServer
             var dict = new SpawnPickups();
             for (int i = 0; i < numberPicks; i++)
             {
-                var p = randomPoses[TotalPickupsSpawned];
+                var p = randomPoses[i];
                 var pos = new PositionMessage()
                 {
                     X = p.X,
@@ -120,36 +121,36 @@ namespace AgarioServer
             }
         }
 
+        public void SendSizeInfo()
+        {
+            
+        }
+        
         public void SendScoreInfo()
         {
             var dict = new ScoreDictionaryMessage();
             SetRank();
+            var count = 0;
 
-            foreach (var s in theLinks)
+            foreach (var r in playerRanks)
             {
                 var mess = new ScoreMessage()
                 {
-                    Score = s.Score,
-                    Rank = s.Rank,
-                    Name = s.PlayerName
+                    Score = r.Score,
+                    Rank = count,
+                    Name = r.PlayerName
                 };
-                dict.ScoreMessages.Add(s.PlayerNumber, mess);
+                dict.ScoreMessages.Add(r.PlayerNumber, mess);
+                count++;
             }
-            
+
             SendMessageToAll(dict, JsonType2.JsonConvert);    
         }
 
         private void SetRank()
         {
-            var count = 0;
-            var order = theLinks
-                .OrderByDescending(x => x.Score)
-                .Select(x =>
-                {
-                    x.Rank = count;
-                    count++;
-                    return x;
-                }).ToList();
+            playerRanks = theLinks
+                .OrderByDescending(x => x.Score).ToList();
         }
         
         
