@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
+using System.Numerics;
 using System.Security.Cryptography;
 using AgarioShared;
 using AgarioShared.AgarioShared.Enums;
@@ -18,8 +19,9 @@ namespace AgarioServer
         public List<PlayerLink> theLinks = new();
         private int countToSpawn;
         private int TotalPickupsSpawned;
-        
-        
+        private List<PositionMessage> randomPoses = new();
+
+
         public void AddNewPlayer(TcpClient client, PlayerCounter playerCounter)
         {
             
@@ -48,11 +50,9 @@ namespace AgarioServer
             SendSpawnMessage(30);
         }
 
-
-        private void SendSpawnMessage(int numberPicks)
+        public void GenerateRandomPositions(int numberPos)
         {
-            var dict = new SpawnPickups();
-            for (int i = 0; i < numberPicks; i++)
+            for (int i = 0; i < numberPos; i++)
             {
                 var x = RandomNumberGenerator.GetInt32(-50, 50);
                 var z = RandomNumberGenerator.GetInt32(-50, 50);
@@ -61,6 +61,22 @@ namespace AgarioServer
                     X = x,
                     Y = 0.1f,
                     Z = z
+                };
+                randomPoses.Add(pos);
+            }
+        }
+
+        private void SendSpawnMessage(int numberPicks)
+        {
+            var dict = new SpawnPickups();
+            for (int i = 0; i < numberPicks; i++)
+            {
+                var p = randomPoses[TotalPickupsSpawned];
+                var pos = new PositionMessage()
+                {
+                    X = p.X,
+                    Y = 0.1f,
+                    Z = p.Z
                 };
                 dict.positions.Add(pos);
                 TotalPickupsSpawned++;

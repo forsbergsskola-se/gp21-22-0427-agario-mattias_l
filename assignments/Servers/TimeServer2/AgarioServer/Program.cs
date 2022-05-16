@@ -35,6 +35,7 @@ namespace AgarioServer
                 {
                     Console.WriteLine("Starting new game");
                     theGame = new Game();
+                    theGame.GenerateRandomPositions(80);
                     theGame.AddNewPlayer(client, (PlayerCounter) count);
                     new Thread(theGame.Start).Start();
                     count++;

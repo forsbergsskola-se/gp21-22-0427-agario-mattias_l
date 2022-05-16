@@ -73,6 +73,8 @@ public class PlayerLink
     
     public void IncreaseScore(PlayerCounter counter, int score, bool sendToServer)
     {
+        if (counter != playerNumber) return;
+        
         _score += score;
         if (!sendToServer) return;
 

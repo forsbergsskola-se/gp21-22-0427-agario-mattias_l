@@ -10,6 +10,8 @@ namespace AgarioShared.AgarioShared.Enums
         Start,
         StartDictionary,
         SpawnPickups,
+        Size,
+        SizeDictionary,
         Error
     }
 }
