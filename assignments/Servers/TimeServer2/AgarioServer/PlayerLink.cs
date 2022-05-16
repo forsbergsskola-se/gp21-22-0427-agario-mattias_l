@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using AgarioShared.AgarioShared.Enums;
 using AgarioShared.AgarioShared.Messages;
+using AgarioShared.Assets.Scripts.AgarioShared.Messages;
 using Newtonsoft.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
@@ -77,7 +78,8 @@ namespace AgarioServer
                     return MessageTypes.Start;
                 case "83":
                     return MessageTypes.Score;
-               
+                case "75":
+                    return MessageTypes.Size;
             }
        
             return MessageTypes.Error;
@@ -120,6 +122,9 @@ namespace AgarioServer
                     if(scoreMessage != null)
                         Score = scoreMessage.Score;
                     theParent.SendScoreInfo();
+                    break;
+                case MessageTypes.Size:
+                    var sizeMessage = JsonSerializer.Deserialize<SizeMessage>(json, _options);
                     break;
             }
         }

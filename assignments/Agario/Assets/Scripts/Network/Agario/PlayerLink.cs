@@ -112,6 +112,8 @@ public class PlayerLink
                 return MessageTypes.Start;
             case "98":
                 return MessageTypes.SpawnPickups;
+            case "10":
+                return MessageTypes.SizeDictionary;
                 
         }
        
@@ -188,6 +190,7 @@ public class PlayerLink
 
         if (_score % 5 == 0)
         {
+            
             SizeUpdated?.Invoke(_score, playerNumber);
         }
     }

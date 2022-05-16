@@ -23,6 +23,9 @@ public class UI_Manager : MonoBehaviour
  
     void Start()
     {
+        Debug.Log((int)'k');
+        Debug.Log((int) 'K');
+        
         scoreBoard = GetComponentInChildren<TextMeshProUGUI>();
         scoreBoard.text = "Current score: 0";
         PlayerLink.Instance.ScoreUpdated += NewScore;
