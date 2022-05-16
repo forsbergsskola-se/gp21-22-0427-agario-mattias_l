@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
+using AgarioShared;
 using AgarioShared.AgarioShared.Enums;
 using AgarioShared.AgarioShared.Messages;
 using Newtonsoft.Json;
@@ -22,7 +23,11 @@ public class PlayerLink
     public string PlayerName { get;  private set; }
     public event Action<Vector3, PlayerCounter> NewPositionGot;
     public event Action<int, PlayerCounter> ScoreUpdated;
+    public event Action<List<string>> UpdateTheRankings; 
+
     public event Action<StartDictionaryMessage> StartMultiAction;
+
+    public List<string> currentRankings = new();
     public event Action<StartMessage> StartSingleAction;
     private Dispatcher _dispatcher;
     public TcpClient Client { get;  private set; }
@@ -64,8 +69,14 @@ public class PlayerLink
     {
         _score += score;
         if (!sendToServer) return;
-        
-        SendMessage(_score);
+
+        ScoreMessage theScore = new ScoreMessage()
+        {
+            Score = _score,
+            Rank = _rank,
+            Name =  PlayerName
+        };
+        SendMessage(theScore);
     }
     
     
@@ -116,9 +127,36 @@ public class PlayerLink
             case MessageTypes.PositionDictionary:
                 SetMultiPos(json);
                 break;
+            case MessageTypes.ScoreDictionary:
+                SetScore(json);
+                break;
         }
     }
 
+    private void SetScore(string json)
+    {
+        var dict4 = JsonConvert.DeserializeObject<ScoreDictionaryMessage>(json);
+        currentRankings.Clear();
+
+        foreach (var s in dict4.ScoreMessages)
+        {
+            currentRankings.Add(s.Value.Name);
+            if (s.Key == playerNumber)
+            {
+                _score = s.Value.Score;
+                _rank = s.Value.Rank;
+                Dispatcher.RunOnMainThread(SetScoreMain);
+            }
+        }
+        
+    }
+
+    private void SetScoreMain()
+    {
+        ScoreUpdated?.Invoke(_score, playerNumber);
+        UpdateTheRankings?.Invoke(currentRankings);
+    }
+    
     private void SetMultiPos(string json)
     {
         Debug.Log($"move action got: {json}");

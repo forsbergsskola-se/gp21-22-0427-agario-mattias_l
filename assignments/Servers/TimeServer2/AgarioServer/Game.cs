@@ -81,7 +81,9 @@ namespace AgarioServer
                 var mess = new ScoreMessage()
                 {
                     Score = s.Value.Score,
-                    Rank = s.Value.Rank
+                    Rank = s.Value.Rank,
+                    Name = s.Value.PlayerName
+                    
                 };
                 dict.ScoreMessages.Add(s.Key, mess);
             }

@@ -9,6 +9,8 @@ public class PlayerMesh : MonoBehaviour
 {
     Mesh playerMesh;
     MeshCollider meshCollider;
+    private Rigidbody _rigidbody;
+    private SphereCollider Collider;
     public Material theMaterial;
     [NonSerialized] List<Vector3> vertices = new(); 
     [NonSerialized] private List<int> triangles= new();
@@ -19,17 +21,21 @@ public class PlayerMesh : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        _rigidbody = gameObject.AddComponent<Rigidbody>();
+        _rigidbody.useGravity = false;
+        Collider = gameObject.AddComponent<SphereCollider>();
+        Collider.radius = 1f;
+
     }
 
     private void Awake()
     {
         GetComponent<MeshFilter>().mesh = playerMesh = new Mesh();
-        meshCollider = new MeshCollider();
-        BuildAMesh(12);
+       // meshCollider = new MeshCollider();
+        BuildAMesh(12, 1f);
     }
 
-    private void BuildAMesh(int numTris)
+    private void BuildAMesh(int numTris, float startExtent)
     {
         var center = Vector3.zero;
         var degreeInc = 360 / numTris;
@@ -37,8 +43,8 @@ public class PlayerMesh : MonoBehaviour
         
         for (var i = 0; i < numTris; i++)
         {
-            Vector3 extent2 = GetCircleEdge(degrees, center, 1);
-            Vector3 extent1 = GetCircleEdge(degrees + degreeInc, center, 1);
+            Vector3 extent2 = GetCircleEdge(degrees, center, startExtent);
+            Vector3 extent1 = GetCircleEdge(degrees + degreeInc, center, startExtent);
             AddTriangle(extent2,center, extent1);
             degrees += degreeInc;
         }

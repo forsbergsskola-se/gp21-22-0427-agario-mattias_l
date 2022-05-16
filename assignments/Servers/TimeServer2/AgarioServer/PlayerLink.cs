@@ -20,6 +20,7 @@ namespace AgarioServer
         public Vector3 Position;
         public int Score;
         public int Rank;
+        public float size = 1f;
         
         private  StreamWriter _streamWriter;
         private Game theParent;
@@ -100,6 +101,7 @@ namespace AgarioServer
         
         private void ReadMessage(string json)
         {
+            Console.WriteLine(json);
             switch (GetMessageType(json))
             {
                 case MessageTypes.Start:

@@ -19,7 +19,7 @@ namespace AgarioServer
         private static int maxPlayerCount = 
             Enum.GetValues(typeof(PlayerCounter)).Length;
         
-        static void Main(string[] args)
+        static void Main()
         {
             server = new TcpListener(localAddress, port);
             server.Start();

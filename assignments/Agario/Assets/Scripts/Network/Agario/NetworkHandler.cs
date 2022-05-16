@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using UnityEngine;
 using System.Text.Json;
 using System.Threading;
+using AgarioShared;
 using AgarioShared.AgarioShared.Enums;
 using AgarioShared.AgarioShared.Messages;
 using TMPro;
@@ -61,6 +62,11 @@ public class NetworkHandler : MonoBehaviour
                 spawnedActors.Add(p.Key, spawn);
             }
         }
+    }
+
+    public void UpdateScore(ScoreDictionaryMessage message)
+    {
+        
     }
     
     private void SetPlayerName(string theName)
