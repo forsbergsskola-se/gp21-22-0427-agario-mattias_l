@@ -16,14 +16,13 @@ public class PlayerLink
 {
     private static PlayerLink _link;
     private StreamWriter streamWriter;
-  //  private Vector3 _newLocation;
     private int _score;
     private int _rank;
     public string PlayerName { get;  private set; }
     public PlayerCounter playerNumber;
     public event Action<Vector3, PlayerCounter> NewPositionGot;
     public event Action<int, PlayerCounter> ScoreUpdated;
-    public event Action<int, PlayerCounter> SizeUpdated;
+    public event Action<float, PlayerCounter> SizeUpdated;
     public event Action<List<string>> UpdateTheRankings;
     public event Action<string,PlayerCounter> SetPlayerCounter;
     public event Action<StartDictionaryMessage> StartMultiAction;
@@ -64,11 +63,11 @@ public class PlayerLink
         SendMessage(mess);
     }
     
-    public void IncreaseScore(PlayerCounter counter, int score)
+    public void IncreaseScore(PlayerCounter counter)
     {
         if (counter != playerNumber) return;
         
-        _score += score;
+        _score += 1;
 
         ScoreMessage theScore = new ScoreMessage()
         {
@@ -140,6 +139,11 @@ public class PlayerLink
     private void SetSizes(string json)
     {
         var dict1 = JsonUtility.FromJson<SizeDictionary>(json);
+
+        foreach (var s in dict1.sizes)
+        {
+            SizeUpdated?.Invoke(s.Value.size, s.Key);
+        }
         
     }
     

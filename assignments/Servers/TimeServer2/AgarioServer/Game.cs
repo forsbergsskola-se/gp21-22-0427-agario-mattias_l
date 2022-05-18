@@ -123,7 +123,19 @@ namespace AgarioServer
 
         public void SendSizeInfo()
         {
+            var sizeDict = new SizeDictionary();
+
+            foreach (var s in theLinks)
+            {
+                var size = new SizeMessage()
+                {
+                    size = s.size
+                };
+                
+                sizeDict.sizes.Add(s.PlayerNumber, size);
+            }
             
+            SendMessageToAll(sizeDict, JsonType2.JsonConvert);
         }
         
         public void SendScoreInfo()

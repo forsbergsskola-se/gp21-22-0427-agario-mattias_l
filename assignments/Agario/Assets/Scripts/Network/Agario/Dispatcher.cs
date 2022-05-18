@@ -36,23 +36,22 @@ public class Dispatcher : MonoBehaviour
  
     private void Update()
     {
-        if(_queued)
+        if (!_queued) return;
+        
+        lock(_backlog) 
         {
-            lock(_backlog) 
-            {
-                (_actions, _backlog) = (_backlog, _actions);
-                _queued = false;
-            }
- 
-            foreach(var action in _actions)
-                action();
- 
-            _actions.Clear();
+            (_actions, _backlog) = (_backlog, _actions);
+            _queued = false;
         }
+ 
+        foreach(var action in _actions)
+            action();
+ 
+        _actions.Clear();
     }
  
     static Dispatcher _instance;
     static volatile bool _queued = false;
-    static List<Action> _backlog = new (32);
-    static List<Action> _actions = new (32);
+    static List<Action> _backlog = new (8);
+    static List<Action> _actions = new (8);
 }

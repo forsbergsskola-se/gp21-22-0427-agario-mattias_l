@@ -61,7 +61,7 @@ public class PlayerMesh : MonoBehaviour
         PlayerLink.Instance.SizeUpdated -= IncreaseSize;
     }
 
-    public void IncreaseSize(int score, PlayerCounter playerCounter)
+    public void IncreaseSize(float score, PlayerCounter playerCounter)
     {
         if (PlayerCounter != playerCounter) return;
         gameObject.transform.localScale += new Vector3(0.1f, 0, 0.1f);

@@ -9,7 +9,7 @@ public class PickupScript : MonoBehaviour
     {
         var count = other.GetComponent<PlayerMesh>().PlayerCounter;
         
-        PlayerLink.Instance.IncreaseScore(count,1);
+        PlayerLink.Instance.IncreaseScore(count);
         Destroy(gameObject);
     }
 }
