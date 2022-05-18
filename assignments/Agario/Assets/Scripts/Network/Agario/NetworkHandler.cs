@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
@@ -23,13 +24,13 @@ public class NetworkHandler : MonoBehaviour
     private string playerName;
     public GameObject startScreen;
     public GameObject spawnablePlayer;
-    public Dictionary<PlayerCounter, GameObject> spawnedActors = new();
+   // public Dictionary<PlayerCounter, GameObject> spawnedActors = new();
     private StartDictionaryMessage startDictionary;
     private PlayerSelectPosition _selectPosition;
     public static event Action<string, PlayerCounter> SetMeshName;
 
     private StartMessage _startMessage;
-
+    public List<PlayerMesh> spawnedPlayers = new();
 
     private void Awake()
     {
@@ -47,37 +48,40 @@ public class NetworkHandler : MonoBehaviour
     private void OnStartSingle(StartMessage message)
     {
         _startMessage = message;
-        Dispatcher.RunOnMainThread(StartASingle);
+   //    Dispatcher.RunOnMainThread(SpawnOwnedPlayer);
     }
 
-    private void StartASingle()
+    private void SpawnOwnedPlayer()
     {
+        Debug.Log($"spawning player{_startMessage.PlayerName}");
+        Debug.Log($"spawning player{PlayerLink.Instance.PlayerName}");
         var spawnPos = new Vector3(0, 0.1f, 0);
         var spawn = Instantiate(spawnablePlayer, spawnPos, Quaternion.identity);
-        spawnedActors.Add(_startMessage.PlayerCount, spawn);
-        Dispatcher.RunOnMainThread(StartASingle);
+        spawn.GetComponent<PlayerMesh>().playerName = PlayerLink.Instance.PlayerName;
+        spawn.GetComponent<PlayerMesh>().PlayerCounter = PlayerLink.Instance.playerNumber;
+        spawnedPlayers.Add(spawn.GetComponent<PlayerMesh>());
     }
     
     private void OnstartMulti(StartDictionaryMessage dict)
     {
+        _selectPosition.PlayerCounter = PlayerLink.Instance.playerNumber;
         startDictionary = dict;
-        Dispatcher.RunOnMainThread(MultiStart);
+        Dispatcher.RunOnMainThread(SpawnOtherPlayers);
     }
 
-    private void MultiStart()
+    private void SpawnOtherPlayers()
     {
         Debug.Log("Spawning players");
         foreach (var p in startDictionary.StartMessages)
         {
-            if (!spawnedActors.ContainsKey(p.Key))
-            {
-                var spawnPos = new Vector3(p.Value.X, p.Value.Y, p.Value.Z);
-                
-                var spawn = Instantiate(spawnablePlayer, spawnPos, Quaternion.identity);
-                
-                spawnedActors.Add(p.Key, spawn);
-                SetMeshName?.Invoke(p.Value.Name, p.Key);
-            }
+            if (spawnedPlayers.SingleOrDefault(x => x.PlayerCounter == p.Key) != default)
+                continue;
+            
+            var spawnPos = new Vector3(p.Value.X, p.Value.Y, p.Value.Z);
+            var spawn = Instantiate(spawnablePlayer, spawnPos, Quaternion.identity);
+            spawn.GetComponent<Movement>().PlayerCounter = p.Value.PlayerCounter;
+            spawn.GetComponent<PlayerMesh>().PlayerCounter = p.Value.PlayerCounter;
+            spawnedPlayers.Add(spawn.GetComponent<PlayerMesh>());
         }
     }
 

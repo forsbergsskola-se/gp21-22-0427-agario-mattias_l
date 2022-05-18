@@ -7,5 +7,6 @@ namespace AgarioShared.AgarioShared.Messages
         public int Score;
         public int Rank;
         public string Name;
+        public bool sizeUp;
     }
 }

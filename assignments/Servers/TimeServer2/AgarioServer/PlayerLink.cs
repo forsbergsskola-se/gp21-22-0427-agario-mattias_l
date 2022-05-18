@@ -124,13 +124,6 @@ namespace AgarioServer
                     Score = scoreMessage.Score;
                     theParent.SendScoreInfo();
                     break;
-                
-                case MessageTypes.Size:
-                    var sizeMessage = JsonSerializer.Deserialize<SizeMessage>(json, _options);
-                    if (sizeMessage == null) return;
-                    Size = sizeMessage.size;
-                    theParent.SendSizeInfo();
-                    break;
             }
         }
 

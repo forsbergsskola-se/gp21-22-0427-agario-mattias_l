@@ -28,13 +28,13 @@ public class Movement : MonoBehaviour
 
     private void SetPlayerCounter(string playerName, PlayerCounter playerCounter)
     {
-        if (PlayerLink.Instance.PlayerName != playerName) return;
         PlayerCounter = playerCounter;
     }
 
     private void SetNewPosition(Vector3 newPos, PlayerCounter playerNumber)
     {
-        if (PlayerCounter != playerNumber) return;
+        if (playerNumber != this.PlayerCounter) return;
+        
         if (_currentPos == newPos) return;
 
         nextPosition = newPos + new Vector3(0,elevation, 0);

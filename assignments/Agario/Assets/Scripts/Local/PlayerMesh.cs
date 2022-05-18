@@ -35,7 +35,7 @@ public class PlayerMesh : MonoBehaviour
     private void Awake()
     {
         GetComponent<MeshFilter>().mesh = playerMesh = new Mesh();
-        NetworkHandler.SetMeshName += SetPlayerName;
+     //   NetworkHandler.SetMeshName += SetPlayerName;
         
        // meshCollider = new MeshCollider();
         BuildAMesh(12, 1f);
@@ -68,7 +68,7 @@ public class PlayerMesh : MonoBehaviour
     private void OnDisable()
     {
         PlayerLink.Instance.SizeUpdated -= IncreaseSize;
-        NetworkHandler.SetMeshName -= SetPlayerName;
+    //    NetworkHandler.SetMeshName -= SetPlayerName;
     }
 
     public void IncreaseSize(float score, PlayerCounter playerCounter)

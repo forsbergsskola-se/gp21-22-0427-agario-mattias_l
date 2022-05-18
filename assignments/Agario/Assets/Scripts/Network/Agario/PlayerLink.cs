@@ -29,8 +29,11 @@ public class PlayerLink
     public event Action<List<Vector3>> OnSpawnPickups; 
 
     public List<string> currentRankings = new();
+
     public event Action<StartMessage> StartSingleAction;
     public TcpClient Client { get;  private set; }
+
+    private bool sizeUp;
 
     
     public void Init(TcpClient client, string playerName)
@@ -51,13 +54,14 @@ public class PlayerLink
         }
     }
 
-    public void UpdateLocation(Vector3 newLocation)
+    public void UpdateLocation(Vector3 newLocation, PlayerCounter count)
     {
         var mess = new PositionMessage()
         {
             X = newLocation.x,
             Y = newLocation.y,
-            Z = newLocation.z
+            Z = newLocation.z,
+            playerCounter = count
         };
         
         SendMessage(mess);
@@ -68,6 +72,10 @@ public class PlayerLink
         if (counter != playerNumber) return;
         
         _score += 1;
+        IncreaseScoreMessage scores = new IncreaseScoreMessage()
+        {
+            PlayerCounter =  counter
+        };
 
         ScoreMessage theScore = new ScoreMessage()
         {
@@ -186,19 +194,25 @@ public class PlayerLink
             {
                 _score = s.Value.Score;
                 _rank = s.Value.Rank;
+                sizeUp = s.Value.sizeUp;
+                
                 Dispatcher.RunOnMainThread(SetScoreMain);
             }
         }
     }
 
+    public void SendBattleMessage(BattleMessage battle)
+    {
+        
+    }
+    
     private void SetScoreMain()
     {
         ScoreUpdated?.Invoke(_score, playerNumber);
         UpdateTheRankings?.Invoke(currentRankings);
 
-        if (_score % 5 == 0)
+        if (sizeUp)
         {
-            
             SizeUpdated?.Invoke(_score, playerNumber);
         }
     }

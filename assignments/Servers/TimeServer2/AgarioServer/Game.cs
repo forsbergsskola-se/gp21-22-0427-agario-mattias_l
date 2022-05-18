@@ -21,6 +21,7 @@ namespace AgarioServer
         private int TotalPickupsSpawned;
         private List<PositionMessage> randomPoses = new();
         private List<PlayerLink> playerRanks;
+        private int sizeIncrement = 3;
 
 
         public void AddNewPlayer(TcpClient client, PlayerCounter playerCounter)
@@ -123,7 +124,7 @@ namespace AgarioServer
             {
                 var size = new SizeMessage()
                 {
-                    size = s.size
+                    size = 1 + s.Score / 5f
                 };
                 
                 sizeDict.sizes.Add(s.PlayerNumber, size);
@@ -140,11 +141,14 @@ namespace AgarioServer
 
             foreach (var r in playerRanks)
             {
+                var sizeUp = r.Score % sizeIncrement == 0;
+
                 var mess = new ScoreMessage()
                 {
                     Score = r.Score,
                     Rank = count,
-                    Name = r.PlayerName
+                    Name = r.PlayerName,
+                    sizeUp = sizeUp
                 };
                 dict.ScoreMessages.Add(r.PlayerNumber, mess);
                 count++;

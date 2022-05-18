@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5719459504216064715}
   - component: {fileID: 8623669330784244058}
   - component: {fileID: 4396913096095485649}
+  - component: {fileID: 3850723223347996968}
   m_Layer: 0
   m_Name: PlayerMesh
   m_TagString: Untagged
@@ -48,6 +49,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerCounter: 0
+  playerName: 
   theMaterial: {fileID: 2100000, guid: ac901e8a8153ea94fbd9c72e900365e5, type: 2}
 --- !u!114 &5719459504216064715
 MonoBehaviour:
@@ -115,3 +117,15 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3850723223347996968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1481641910000314633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b14d7697047c4904faa29f73e252c5a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
