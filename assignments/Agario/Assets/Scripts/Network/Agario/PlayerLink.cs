@@ -33,7 +33,7 @@ public class PlayerLink
     public TcpClient Client { get;  private set; }
 
     
-    public void Init(TcpClient client, string playerName, Dispatcher dispatcher)
+    public void Init(TcpClient client, string playerName)
     {
         Client = client;
         PlayerName = playerName;
@@ -152,6 +152,12 @@ public class PlayerLink
         var dict1 = JsonUtility.FromJson<StartMessage>(json);
         playerNumber = dict1.PlayerCount;
         Debug.Log($"Player{dict1.PlayerCount} With name {dict1.PlayerName} logged in");
+        StartSingleAction?.Invoke(dict1);
+        SetPlayerCounter?.Invoke(PlayerName, playerNumber);
+    }
+
+    public void SetThePlayerCounter()
+    {
         SetPlayerCounter?.Invoke(PlayerName, playerNumber);
     }
     

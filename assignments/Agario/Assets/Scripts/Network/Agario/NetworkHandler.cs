@@ -26,6 +26,9 @@ public class NetworkHandler : MonoBehaviour
     public Dictionary<PlayerCounter, GameObject> spawnedActors = new();
     private StartDictionaryMessage startDictionary;
     private PlayerSelectPosition _selectPosition;
+    public static event Action<string, PlayerCounter> SetMeshName;
+
+    private StartMessage _startMessage;
 
 
     private void Awake()
@@ -37,9 +40,23 @@ public class NetworkHandler : MonoBehaviour
         nameField.onEndEdit.AddListener(SetPlayerName);
         nameField.onValueChanged.AddListener(SetPlayerName);
         PlayerLink.Instance.StartMultiAction += OnstartMulti;
+        PlayerLink.Instance.StartSingleAction += OnStartSingle;
     }
 
-   
+
+    private void OnStartSingle(StartMessage message)
+    {
+        _startMessage = message;
+        Dispatcher.RunOnMainThread(StartASingle);
+    }
+
+    private void StartASingle()
+    {
+        var spawnPos = new Vector3(0, 0.1f, 0);
+        var spawn = Instantiate(spawnablePlayer, spawnPos, Quaternion.identity);
+        spawnedActors.Add(_startMessage.PlayerCount, spawn);
+        Dispatcher.RunOnMainThread(StartASingle);
+    }
     
     private void OnstartMulti(StartDictionaryMessage dict)
     {
@@ -57,10 +74,9 @@ public class NetworkHandler : MonoBehaviour
                 var spawnPos = new Vector3(p.Value.X, p.Value.Y, p.Value.Z);
                 
                 var spawn = Instantiate(spawnablePlayer, spawnPos, Quaternion.identity);
-                spawn.GetComponent<Movement>().PlayerCounter = p.Key;
-                spawn.GetComponent<PlayerMesh>().PlayerCounter = p.Key;
-                spawn.GetComponent<PlayerMesh>().playerName = p.Value.Name;
+                
                 spawnedActors.Add(p.Key, spawn);
+                SetMeshName?.Invoke(p.Value.Name, p.Key);
             }
         }
     }
@@ -73,6 +89,7 @@ public class NetworkHandler : MonoBehaviour
     private void OnDisable()
     {
         PlayerLink.Instance.StartMultiAction -= OnstartMulti;
+        PlayerLink.Instance.StartSingleAction -= OnStartSingle;
         startButton.onClick.RemoveAllListeners();
         
         nameField.onEndEdit.RemoveAllListeners();
@@ -86,7 +103,7 @@ public class NetworkHandler : MonoBehaviour
         startScreen.SetActive(false);
         _client = new TcpClient("127.0.0.1", port);
   
-        PlayerLink.Instance.Init(_client, playerName, transform.GetComponent<Dispatcher>());
+        PlayerLink.Instance.Init(_client, playerName);
         
         var mess = new StartMessage()
         {

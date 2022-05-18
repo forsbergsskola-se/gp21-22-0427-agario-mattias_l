@@ -48,7 +48,7 @@ namespace AgarioServer
             }
             
             SendMessageToAll(dict, JsonType2.JsonConvert);
-            SendSpawnMessage(30);
+            SendSpawnMessage(200);
         }
 
         public void GenerateRandomPositions(int numberPos)
@@ -113,12 +113,6 @@ namespace AgarioServer
             }
             
             SendMessageToAll(dict, JsonType2.JsonConvert);
-            countToSpawn++;
-            if (countToSpawn > 12)
-            {
-                SendSpawnMessage(26);
-                countToSpawn = 0;
-            }
         }
 
         public void SendSizeInfo()
