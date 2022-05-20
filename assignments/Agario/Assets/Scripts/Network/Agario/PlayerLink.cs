@@ -31,6 +31,9 @@ public class PlayerLink
     public List<string> currentRankings = new();
 
     public event Action<StartMessage> StartSingleAction;
+
+    public event Action<PlayerCounter> KillOponent;
+    
     public TcpClient Client { get;  private set; }
 
     private bool sizeUp;
@@ -152,7 +155,25 @@ public class PlayerLink
 
     private void Kill(string json)
     {
-        
+        var dict3 = JsonConvert.DeserializeObject<DeathDictionary>(json);
+
+        foreach (var d in dict3.aliveOrDead)
+        {
+            if (!d.Value) continue;
+            
+            if(d.Key == playerNumber)    
+                GameEnder();
+            else
+            {
+                KillOponent?.Invoke(d.Key);
+            }
+            
+        }
+    }
+
+    private void GameEnder()
+    {
+        Client.Close();
     }
     
     private void SetSizes(string json)
