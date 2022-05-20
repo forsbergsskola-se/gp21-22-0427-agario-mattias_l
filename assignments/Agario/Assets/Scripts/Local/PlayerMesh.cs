@@ -25,6 +25,8 @@ public class PlayerMesh : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+        PlayerLink.Instance.KillOponent += KillThis;
         nameText = gameObject.AddComponent<TextMeshProUGUI>();
         
         Collider = gameObject.AddComponent<SphereCollider>();
@@ -32,12 +34,17 @@ public class PlayerMesh : MonoBehaviour
 
     }
 
+    private void KillThis(PlayerCounter count)
+    {
+        if (count != PlayerCounter) return;
+        
+        Destroy(gameObject);
+    }
+
     private void Awake()
     {
         GetComponent<MeshFilter>().mesh = playerMesh = new Mesh();
-     //   NetworkHandler.SetMeshName += SetPlayerName;
-        
-       // meshCollider = new MeshCollider();
+    
         BuildAMesh(12, 1f);
         SetMaterial(theMaterial);
     }
@@ -51,7 +58,7 @@ public class PlayerMesh : MonoBehaviour
     
     private void BuildAMesh(int numTris, float startExtent)
     {
-        PlayerLink.Instance.SizeUpdated += IncreaseSize;
+        PlayerLink.Instance.SizeUpdated += SizeUp;
         var center = Vector3.zero;
         var degreeInc = 360 / numTris;
         var degrees = 0f;
@@ -67,11 +74,11 @@ public class PlayerMesh : MonoBehaviour
 
     private void OnDisable()
     {
-        PlayerLink.Instance.SizeUpdated -= IncreaseSize;
-    //    NetworkHandler.SetMeshName -= SetPlayerName;
+        PlayerLink.Instance.KillOponent += KillThis;
+        PlayerLink.Instance.SizeUpdated -= SizeUp;
     }
 
-    public void IncreaseSize(float score, PlayerCounter playerCounter)
+    public void SizeUp(float size, PlayerCounter playerCounter)
     {
         if (PlayerCounter != playerCounter) return;
         gameObject.transform.localScale += new Vector3(0.1f, 0, 0.1f);
