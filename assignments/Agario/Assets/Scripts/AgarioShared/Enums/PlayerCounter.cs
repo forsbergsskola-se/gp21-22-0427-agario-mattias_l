@@ -10,5 +10,6 @@ namespace AgarioShared.AgarioShared.Enums
         Player4,
         Player5,
         Player6,
+        None
     }
 }

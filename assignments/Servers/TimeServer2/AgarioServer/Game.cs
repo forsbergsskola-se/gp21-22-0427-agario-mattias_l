@@ -22,6 +22,7 @@ namespace AgarioServer
         private List<PositionMessage> randomPoses = new();
         private List<PlayerLink> playerRanks;
         private int sizeIncrement = 3;
+        public List<BattleMessage> currentFights = new();
 
 
         public void AddNewPlayer(TcpClient client, PlayerCounter playerCounter)
@@ -115,23 +116,6 @@ namespace AgarioServer
             
             SendMessageToAll(dict, JsonType2.JsonConvert);
         }
-
-        public void SendSizeInfo()
-        {
-            var sizeDict = new SizeDictionary();
-
-            foreach (var s in theLinks)
-            {
-                var size = new SizeMessage()
-                {
-                    size = 1 + s.Score / 5f
-                };
-                
-                sizeDict.sizes.Add(s.PlayerNumber, size);
-            }
-            
-            SendMessageToAll(sizeDict, JsonType2.JsonConvert);
-        }
         
         public void SendScoreInfo()
         {
@@ -162,7 +146,40 @@ namespace AgarioServer
             playerRanks = theLinks
                 .OrderByDescending(x => x.Score).ToList();
         }
-        
+
+        public void ProcessBattle(BattleMessage message)
+        {
+            var other =  theLinks.Single(x => x.PlayerNumber == message.otherPlayer);
+            var other1 =  theLinks.Single(x => x.PlayerNumber == message.thisPlayer);
+
+            PlayerCounter dead = PlayerCounter.None;
+
+            if (other.size > other1.size)
+                dead = other1.PlayerNumber;
+            
+            else if (other.size < other1.size)
+                dead = other.PlayerNumber;
+
+            DeathDictionary deaths = new DeathDictionary();
+            var dict = new Dictionary<PlayerCounter, bool>();
+            foreach (var l in theLinks)
+            {
+                if (l.PlayerNumber == dead)
+                {
+                    dict.Add(l.PlayerNumber, true);
+                }
+                else
+                {
+                    dict.Add(l.PlayerNumber, false);
+                }
+            }
+
+            deaths.aliveOrDead = dict;
+            
+            SendMessageToAll(deaths, JsonType2.JsonConvert);
+            
+            currentFights.Clear();
+        }
         
         public void Start()
         {

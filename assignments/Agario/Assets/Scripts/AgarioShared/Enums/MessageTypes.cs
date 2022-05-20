@@ -12,6 +12,8 @@ namespace AgarioShared.AgarioShared.Enums
         SpawnPickups,
         Size,
         SizeDictionary,
+        Battle,
+        DeathDictionary,
         Error
     }
 }

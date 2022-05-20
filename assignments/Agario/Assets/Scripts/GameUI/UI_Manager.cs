@@ -5,6 +5,7 @@ using System.Linq;
 using AgarioShared;
 using AgarioShared.AgarioShared.Enums;
 using AgarioShared.AgarioShared.Messages;
+using AgarioShared.Assets.Scripts.AgarioShared.Messages;
 using Newtonsoft.Json;
 using TMPro;
 using Unity.VisualScripting;
@@ -23,6 +24,7 @@ public class UI_Manager : MonoBehaviour
  
     void Start()
     {
+        Debug.Log(new DeathDictionary().T);
         scoreBoard = GetComponentInChildren<TextMeshProUGUI>();
         scoreBoard.text = "Current score: 0";
         PlayerLink.Instance.ScoreUpdated += NewScore;

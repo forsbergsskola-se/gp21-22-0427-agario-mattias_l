@@ -81,6 +81,8 @@ namespace AgarioServer
                     return MessageTypes.Score;
                 case "75":
                     return MessageTypes.Size;
+                case "79":
+                    return MessageTypes.Battle;
             }
        
             return MessageTypes.Error;
@@ -124,9 +126,25 @@ namespace AgarioServer
                     Score = scoreMessage.Score;
                     theParent.SendScoreInfo();
                     break;
+                case MessageTypes.Battle:
+                    DoBattle(json);
+                    break;
+                    
             }
         }
 
+
+        private void DoBattle(string json)
+        {
+            var battleMessage = JsonSerializer.Deserialize<BattleMessage>(json, _options);
+
+            if (!theParent.currentFights.Contains(battleMessage))
+            {
+                theParent.ProcessBattle(battleMessage);
+                theParent.currentFights.Add(battleMessage);
+            }
+        }
+        
         private void Begin()
         {
             var streamReader = new StreamReader(PlayerClient.GetStream());

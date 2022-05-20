@@ -113,6 +113,9 @@ public class PlayerLink
                 return MessageTypes.SpawnPickups;
             case "10":
                 return MessageTypes.SizeDictionary;
+            case "11":
+                return MessageTypes.DeathDictionary;
+                
         }
        
         return MessageTypes.Error;
@@ -141,9 +144,17 @@ public class PlayerLink
             case MessageTypes.SizeDictionary:
                 SetSizes(json);
                 break;
+            case MessageTypes.DeathDictionary:
+                Kill(json);
+                break;
         }
     }
 
+    private void Kill(string json)
+    {
+        
+    }
+    
     private void SetSizes(string json)
     {
         var dict1 = JsonUtility.FromJson<SizeDictionary>(json);
@@ -203,7 +214,7 @@ public class PlayerLink
 
     public void SendBattleMessage(BattleMessage battle)
     {
-        
+        SendMessage(battle);
     }
     
     private void SetScoreMain()
